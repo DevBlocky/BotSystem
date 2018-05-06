@@ -1,0 +1,17 @@
+{
+  "token": "BOT TOKEN",
+
+  "permissions": [
+    {"name": "staff", "id": "ROLE ID"},
+    {"name": "moderator", "id": "ROLE ID"},
+    {"name": "user", "id": "ROLE ID"}
+  ],
+
+  "welcome-channel": "CHANNEL ID",
+  "suggest-channel": "CHANNEL ID",
+
+  "game": "BOT GAME HERE",
+  "status": "online",
+  "nickname": "NICKNAME OF BOT HERE",
+  "version": "0.4.3"
+}
