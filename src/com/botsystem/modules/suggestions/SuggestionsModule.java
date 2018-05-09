@@ -72,7 +72,7 @@ public class SuggestionsModule extends BotSystemModule {
 	}
 	
 	private void makeSuggestion(Message m, TextChannel postChannel) {
-		String msgContent = m.getContentDisplay();
+		String msgContent = m.getContentRaw();
 		
 		SuggestionEmbed emb = new SuggestionEmbed(m.getAuthor());
 		m.delete().queue();
