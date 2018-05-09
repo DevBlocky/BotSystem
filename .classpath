@@ -3,7 +3,11 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="D:/eclipse/java/botsystem/jar/commons-cli-1.4.jar"/>
-	<classpathentry kind="lib" path="D:/eclipse/java/botsystem/jar/JDA-3.6.0_354-withDependencies.jar" sourcepath="jar/JDA-3.6.0_354-javadoc.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse/java/botsystem/jar/JDA-3.6.0_354-withDependencies.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/D:/eclipse/java/botsystem/jar/JDA-3.6.0_354-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="D:/eclipse/java/botsystem/jar/json-simple-1.1.1.jar"/>
 	<classpathentry kind="lib" path="D:/eclipse/java/botsystem/jar/slf4j-simple-1.7.25.jar"/>
 	<classpathentry kind="output" path="bin"/>
