@@ -15,7 +15,7 @@ public class WelcomeModule extends BotSystemModule {
     private static TextChannel getWelcomeChannel(Guild[] guilds) {
         for (Guild g : guilds) {
             for (TextChannel t : g.getTextChannels()) {
-                if (t.getId().equals(Main.conf.getString("welcome-channel"))) {
+                if (t.getId().equals(Main.CONFIG.getString("welcome-channel"))) {
                     return t;
                 }
             }

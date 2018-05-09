@@ -15,9 +15,9 @@ import com.botsystem.modules.noeveryone.NoEveryoneModule;
 import com.botsystem.modules.permissions.PermissionsModule;
 import com.botsystem.modules.pingpong.PingPongModule;
 import com.botsystem.modules.report.ReportModule;
+import com.botsystem.modules.suggestions.SuggestionsModule;
 import com.botsystem.modules.welcome.WelcomeModule;
 import net.dv8tion.jda.core.events.ReadyEvent;
-import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.core.requests.RestAction;
 import org.apache.commons.cli.*;
 import org.json.simple.JSONArray;
@@ -36,7 +36,7 @@ public class Main {
     /**
      * The BotConfig object, for the entire project
      */
-    public static final BotConfig conf = new BotConfig("bot-conf.json");
+    public static final BotConfig CONFIG = new BotConfig("bot-conf.json");
 
     /**
      * Permissions (setup in setPermissions())
@@ -51,12 +51,7 @@ public class Main {
     /**
      * The CommandLine arguments
      */
-    private static CommandLine cli;
-    /**
-     * Returns the "CommandLine" object, for reading command line
-     * @return CommandLine object
-     */
-    static CommandLine getCli() {return cli;}
+    public static CommandLine COMMAND_LINE;
 
     /**
      * ConsoleCommands, for user input and such
@@ -94,7 +89,7 @@ public class Main {
             o.addOption(helpOpt);
 
             // parsing the options given in startup
-            cli = cliParser.parse(o, cliArgs);
+            COMMAND_LINE = cliParser.parse(o, cliArgs);
         }
         catch (ParseException e) { // if parse exception
             ExceptionHelper.throwException(e); // throw for the exception handler to take
@@ -105,7 +100,7 @@ public class Main {
      * Sets the permissions from the .json config file
      */
     private static void setPermissions() {
-        JSONArray p = conf.getArray("permissions"); // getting permissions from json config
+        JSONArray p = CONFIG.getArray("permissions"); // getting permissions from json config
         for (Object obj : p) {
             JSONObject jObj = (JSONObject)obj; // getting object
             permissions.add(new Pair<>((String) jObj.get("name"), (String) jObj.get("id"))); // adding permission
@@ -123,10 +118,10 @@ public class Main {
         parseCliOptions(args);
 
         // if has options "help", show and return
-        if (cli.hasOption("help")) {
+        if (COMMAND_LINE.hasOption("help")) {
             StringBuilder output = new StringBuilder("botsystem.jar command arguments: \n");
 
-            for (Option opt : cli.getOptions()) { // going through CLI options
+            for (Option opt : COMMAND_LINE.getOptions()) { // going through CLI options
 
                 output.append("    -").append(opt.getOpt()); // adding option to output
                 if (opt.getLongOpt() != null) // if has long option
@@ -139,7 +134,7 @@ public class Main {
             return; // returning before bot creation
         }
 
-        conf.configParse(); // parsing the .json config
+        CONFIG.configParse(); // parsing the .json config
 
         setPermissions(); // setting permissions from the config
 
@@ -148,7 +143,7 @@ public class Main {
         RestAction.DEFAULT_FAILURE = Throwable::printStackTrace;
 
         // getting the token from config
-        final String TOKEN = conf.getString("token");
+        final String TOKEN = CONFIG.getString("token");
 
         BotSystem bot = new BotSystem(TOKEN); // creating the bot
 
@@ -168,7 +163,6 @@ public class Main {
                         // user commands
                         new UptimeCommand("uptime", "user"),
                         new InstallHelpCommand("installhelp", "user"),
-                        new SuggestCommand("suggest", "user"),
 
                         // moderator commands
                         new RoleInfoCommand("roleinfo", "moderator"),
@@ -183,7 +177,8 @@ public class Main {
                 }),
                 new NoEveryoneModule("moderator"),
                 new ReportModule(),
-                new WelcomeModule()
+                new WelcomeModule(),
+                new SuggestionsModule()
         });
 
         // when the bot is ready
@@ -200,12 +195,6 @@ public class Main {
                     new ConsoleTestCommand("test"),
             });
             consoleCommands.start();
-            
-            /*bot.addEvent(GuildMessageReactionAddEvent.class, ex -> {
-            	GuildMessageReactionAddEvent x = (GuildMessageReactionAddEvent)ex;
-            	
-            	Debug.trace(x.getReaction().getReactionEmote().getName());
-            });*/
         });
 
         try {

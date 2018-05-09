@@ -29,7 +29,7 @@ public class HelpCommand extends BotCommand {
         emb.addField(new MessageEmbed.Field("Commands", "" +
                 "Use `^commands` to view all of BotSystem's commands", false));
         emb.addField(new MessageEmbed.Field("Version", "" +
-                Main.conf.getString("version"), false));
+                Main.CONFIG.getString("version"), false));
 
         m.getChannel().sendMessage(emb.build()).queue();
     }

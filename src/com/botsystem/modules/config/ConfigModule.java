@@ -23,7 +23,7 @@ public class ConfigModule extends BotSystemModule {
      * Creates instance of ConfigModule class
      */
     public ConfigModule() {
-        this.conf = Main.conf;
+        this.conf = Main.CONFIG;
     }
 
     /**

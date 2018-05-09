@@ -45,7 +45,7 @@ public class BotSystemEmbed {
         emb
                 .setAuthor("BotSystem", null, "https://cdn.discordapp.com/avatars/371181987391602690/e7b63af6cee7054f7a5deb4e488fe695.png")
                 .setTimestamp(Instant.now())
-                .setFooter("Â© BlockBa5her", null)
+                .setFooter("© BlockBa5her", null)
                 .setColor(new Color(63, 135, 255));
     }
 

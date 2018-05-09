@@ -8,12 +8,13 @@ import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.ReadyEvent;
 
 import javax.security.auth.login.LoginException;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class BotSystem implements Runnable {
 
@@ -60,11 +61,14 @@ public class BotSystem implements Runnable {
         }
     }
 
-    public void addEvent(Type type, BotSystemEventCallback callback) {
-        eventHandler.add(type, callback);
+    @SuppressWarnings("unchecked")
+	public <T extends Event> void addEvent(Class<T> type, Consumer<T> callback) {
+        eventHandler.add(type, e -> {
+        	callback.accept((T)e);
+        });
     }
 
-    private boolean alreadyHasModuleType(Type type) {
+    private boolean alreadyHasModuleType(Class<?> type) {
         for (BotSystemModule m : getModules())
             if (m.getClass().equals(type))
                 return true;
