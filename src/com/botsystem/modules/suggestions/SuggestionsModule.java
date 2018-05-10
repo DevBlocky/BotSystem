@@ -7,10 +7,8 @@ import com.botsystem.Main;
 import com.botsystem.core.BotSystemModule;
 
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageEmbed;
-import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -41,21 +39,6 @@ public class SuggestionsModule extends BotSystemModule {
 		}
 	}
 	
-	private TextChannel getSuggestionChannel() {
-		String cId = Main.CONFIG.getString("suggest-channel");
-		
-		Guild[] guilds = bot.getGuilds();
-		for (Guild g : guilds) {
-			for (TextChannel c : g.getTextChannels()) {
-				if (c.getId().equals(cId)) {
-					return c;
-				}
-			}
-		}
-		
-		return null;
-	}
-	
 	@Override
 	public void onStart() {
 		bot.addEvent(MessageReceivedEvent.class, e -> {
@@ -64,22 +47,21 @@ public class SuggestionsModule extends BotSystemModule {
 			if (mre.getAuthor().isBot())
 				return;
 			
-			TextChannel c = getSuggestionChannel();
-			if (mre.getChannel().getId().equals(c.getId())) {
-				makeSuggestion(mre.getMessage(), c);
+			if (mre.getChannel().getId().equals(Main.CONFIG.getString("suggest-channel"))) {
+				makeSuggestion(mre.getMessage());
 			}
 		});
 	}
 	
-	private void makeSuggestion(Message m, TextChannel postChannel) {
+	private void makeSuggestion(Message m) {
 		String msgContent = m.getContentRaw();
 		
 		SuggestionEmbed emb = new SuggestionEmbed(m.getAuthor());
-		m.delete().queue();
+		m.delete().complete();
 		emb.addField(new MessageEmbed.Field("Suggestion", msgContent, false));
 		// emb.addField(new MessageEmbed.Field("Voting", "Voice your opinion using the reactions below", false));
 		
-		Message newM = postChannel.sendMessage(emb.build()).complete();
+		Message newM = m.getChannel().sendMessage(emb.build()).complete();
 		
 		newM.addReaction("\u2705").queue();
 		newM.addReaction("\u274C").queue();
