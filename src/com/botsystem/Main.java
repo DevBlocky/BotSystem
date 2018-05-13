@@ -10,7 +10,7 @@ import com.botsystem.extensions.Pair;
 import com.botsystem.modules.commands.BotCommand;
 import com.botsystem.modules.commands.BotCommandsModule;
 import com.botsystem.modules.commands.command.*;
-import com.botsystem.modules.config.ConfigModule;
+import com.botsystem.modules.display.DisplayModule;
 import com.botsystem.modules.noeveryone.NoEveryoneModule;
 import com.botsystem.modules.permissions.PermissionsModule;
 import com.botsystem.modules.pingpong.PingPongModule;
@@ -150,7 +150,7 @@ public class Main {
         // adding modules
         bot.addModuleRange(new BotSystemModule[] {
                 // "core" modules
-                new ConfigModule(),
+                new DisplayModule(),
                 new PermissionsModule(permissions),
 
                 // non-required modules (these interact with core modules though)
@@ -167,6 +167,7 @@ public class Main {
                         // moderator commands
                         new RoleInfoCommand("roleinfo", "moderator"),
                         new KickCommand("kick", "moderator", "moderator"),
+                        new PruneCommand("prune", "moderator"), 
 
                         // staff commands
                         new BanCommand("ban", "staff", "staff"),

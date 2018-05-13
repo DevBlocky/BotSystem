@@ -3,7 +3,8 @@ package com.botsystem.modules.commands.command;
 import com.botsystem.extensions.BotSystemEmbed;
 import com.botsystem.extensions.Utils;
 import com.botsystem.modules.commands.BotCommand;
-import com.botsystem.modules.config.ConfigModule;
+import com.botsystem.modules.display.DisplayModule;
+
 import net.dv8tion.jda.core.entities.Message;
 
 import java.util.Map;
@@ -51,7 +52,7 @@ public class StatusCommand extends BotCommand {
         if (possible.containsKey(key)) {
             Utils.StatusInfo info = possible.get(key);
 
-            ConfigModule confModule = this.parent.getBot().getModule(ConfigModule.class);
+            DisplayModule confModule = this.parent.getBot().getModule(DisplayModule.class);
             confModule.setStatus(info.getInternal());
             confModule.queueUpdateNow();
 

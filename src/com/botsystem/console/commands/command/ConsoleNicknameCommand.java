@@ -1,7 +1,7 @@
 package com.botsystem.console.commands.command;
 
 import com.botsystem.console.commands.ConsoleCommand;
-import com.botsystem.modules.config.ConfigModule;
+import com.botsystem.modules.display.DisplayModule;
 
 public class ConsoleNicknameCommand extends ConsoleCommand {
 
@@ -13,7 +13,7 @@ public class ConsoleNicknameCommand extends ConsoleCommand {
 
     @Override
     public void onInvoke(String[] arguments) {
-        ConfigModule confModule = parent.getBot().getModule(ConfigModule.class);
+        DisplayModule confModule = parent.getBot().getModule(DisplayModule.class);
 
         if (arguments.length < 1) {
             confModule.setNickname(null);

@@ -2,7 +2,8 @@ package com.botsystem.modules.commands.command;
 
 import com.botsystem.extensions.BotSystemEmbed;
 import com.botsystem.modules.commands.BotCommand;
-import com.botsystem.modules.config.ConfigModule;
+import com.botsystem.modules.display.DisplayModule;
+
 import net.dv8tion.jda.core.entities.Message;
 
 public class NicknameCommand extends BotCommand {
@@ -18,7 +19,7 @@ public class NicknameCommand extends BotCommand {
     @Override
     public void onInvoke(Message m, String[] args) {
         BotSystemEmbed emb = new BotSystemEmbed();
-        ConfigModule confModule = this.parent.getBot().getModule(ConfigModule.class);
+        DisplayModule confModule = this.parent.getBot().getModule(DisplayModule.class);
 
         if (args.length == 0) {
             confModule.setNickname(null);

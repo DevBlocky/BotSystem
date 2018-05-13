@@ -1,4 +1,4 @@
-package com.botsystem.modules.config;
+package com.botsystem.modules.display;
 
 import com.botsystem.BotConfig;
 import com.botsystem.Debug;
@@ -10,11 +10,18 @@ import net.dv8tion.jda.core.entities.Guild;
 import javax.annotation.Nullable;
 import java.time.Instant;
 
-public class ConfigModule extends BotSystemModule {
+/**
+ * Module for BotSystem about changing the basic discord information of the bot
+ * Name, Game, Status ETC
+ * @author BlockBa5her
+ *
+ */
+public class DisplayModule extends BotSystemModule {
 
     private BotConfig conf; // the config of the bot
     private Instant lastTime; // the last time of the bot update
 
+    // overrides of the stuff
     private String overrideStatus = null;
     private String overrideNickname = null;
     private String overrideGame = null;
@@ -22,8 +29,8 @@ public class ConfigModule extends BotSystemModule {
     /**
      * Creates instance of ConfigModule class
      */
-    public ConfigModule() {
-        this.conf = Main.CONFIG;
+    public DisplayModule() {
+        this.conf = Main.CONFIG; // getting config from "Main"
     }
 
     /**
@@ -45,7 +52,7 @@ public class ConfigModule extends BotSystemModule {
             }
         }
 
-        Debug.trace("updated game, status, and nickname");
+        Debug.trace("updated game, status, and nickname"); // debug
     }
 
     /**
@@ -53,7 +60,7 @@ public class ConfigModule extends BotSystemModule {
      * @param status The online status to override with
      */
     public void setStatus(@Nullable String status) {
-        this.overrideStatus = status;
+        this.overrideStatus = status; // overriding the status
     }
 
     /**
@@ -61,7 +68,7 @@ public class ConfigModule extends BotSystemModule {
      * @param game The game to override with
      */
     public void setGame(@Nullable String game) {
-        this.overrideGame = game;
+        this.overrideGame = game; // overriding the game
     }
 
     /**
@@ -69,26 +76,24 @@ public class ConfigModule extends BotSystemModule {
      * @param nickname The nickname to override with
      */
     public void setNickname(@Nullable String nickname) {
-        this.overrideNickname = nickname;
+        this.overrideNickname = nickname; // overriding the nickname
     }
 
     /**
      * Queues the update of bot information for next tick
      */
     public void queueUpdateNow() {
+    	// setting last time to the minimum so that executes next tick
         this.lastTime = Instant.MIN;
     }
 
-    /**
-     *
-     */
     @Override
     public void onTick() {
         if (lastTime == null) { // if there was no lastTime
             lastTime = Instant.MIN; // set last time to minimum value
         }
         if ((Instant.now().getEpochSecond() - lastTime.getEpochSecond()) < 60) // between now and lastTime is not over 60
-            return; // return func
+            return;
 
         lastTime = Instant.now(); // reset lastTime to now
 

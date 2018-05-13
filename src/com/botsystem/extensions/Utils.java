@@ -1,5 +1,6 @@
 package com.botsystem.extensions;
 
+import com.botsystem.exceptions.ExceptionHelper;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
@@ -49,6 +50,7 @@ public class Utils {
         Instant uptime = Instant.now().minusMillis(since.toEpochMilli());
         long totalMillis = uptime.toEpochMilli();
 
+        // taking millis to uptime format
         double weeksB = (double) totalMillis /
                 (1000 * 60 * 60 * 24 * 7); // number of weeks in millis
         double weeks = Math.floor(weeksB);
@@ -73,6 +75,7 @@ public class Utils {
         double millisB = secondsA * 1000;
         double millis = Math.floor(millisB);
 
+        // returning as new array
         return new long[] {
                 (long)millis,
                 (long)seconds,
@@ -98,5 +101,18 @@ public class Utils {
                 new StatusInfo(null, "You have set the status to `CONFIG DEFAULT`"));
 
         return possible;
+    }
+    
+    public static Thread createTimeout(Runnable r, int waitMillis) {
+    	Thread t = new Thread(() -> { // new thread
+    		try {
+				Thread.sleep(waitMillis); // wait for amount of seconds
+				r.run(); // run the timeout
+			} catch (InterruptedException e) {
+				ExceptionHelper.throwException(e); // throw exception to end program
+			}
+    	});
+    	t.start(); // start thread
+    	return t; // return thread
     }
 }
