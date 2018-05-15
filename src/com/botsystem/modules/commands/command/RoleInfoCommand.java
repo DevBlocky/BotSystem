@@ -10,11 +10,21 @@ import net.dv8tion.jda.core.entities.Role;
 
 import java.util.List;
 
+/**
+ * A command to display info about server roles
+ * @author BlockBa5her
+ *
+ */
 public class RoleInfoCommand extends BotCommand {
 
     private String reqPerm;
     private String cmd;
 
+    /**
+     * Creates an Instance of the "roleinfo" command
+     * @param cmd The command to invoke with
+     * @param reqPerm The required permission to invoke
+     */
     public RoleInfoCommand(String cmd, String reqPerm) {
         this.reqPerm = reqPerm;
         this.cmd = cmd;
@@ -22,18 +32,20 @@ public class RoleInfoCommand extends BotCommand {
 
     @Override
     public void onInvoke(Message m, String[] args) {
-        Guild g = m.getGuild();
-        BotSystemEmbed emb = new BotSystemEmbed();
-        String output = "";
+        Guild g = m.getGuild(); // get guild from msg
+        BotSystemEmbed emb = new BotSystemEmbed(); // create embed
+        StringBuilder output = new StringBuilder(); // create string builder
 
         List<Role> roles = g.getRoles();
         for (Role r : roles) {
-            output += "name: `" + r.getName() + "`, id: `" + r.getId() + "`\n";
+            output.append("name: `" + r.getName() + "`, id: `" + r.getId() + "`\n"); // append to string builder
         }
 
+        // setup embed
         emb.setTitle("Server Role Information");
-        emb.addField(new MessageEmbed.Field("Roles", output, false));
+        emb.addField(new MessageEmbed.Field("Roles", output.toString(), false));
 
+        // send embed msg and display roles
         m.getChannel().sendMessage(emb.build()).queue();
         Debug.trace("displayed roles to user from invoked command");
     }

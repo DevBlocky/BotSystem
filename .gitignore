@@ -57,3 +57,4 @@ saves/
 botsystem_lib/
 botsystem.jar
 bot-conf.json
+/target/

@@ -6,11 +6,21 @@ import com.botsystem.modules.commands.BotCommand;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 
+/**
+ * A bot command to display helpful information about the bot
+ * @author BlockBa5her
+ *
+ */
 public class HelpCommand extends BotCommand {
 
     private String reqPerm;
     private String cmd;
 
+    /**
+     * Creates an Instance of the "help" command
+     * @param cmd The command to invoke with
+     * @param reqPerm The required perm to invoke with
+     */
     public HelpCommand(String cmd, String reqPerm) {
         this.cmd = cmd;
         this.reqPerm = reqPerm;
@@ -18,8 +28,16 @@ public class HelpCommand extends BotCommand {
 
     @Override
     public void onInvoke(Message m, String[] args) {
+    	// create embed
         BotSystemEmbed emb = new BotSystemEmbed();
 
+        /*
+         * Below is basically the help command
+         * 
+         * The "help" command just displays the bot's information
+         * Because no operations are taking place, it's a very simple command
+         */
+        
         emb.setTitle("BotSystem Help");
 
         emb.addField(new MessageEmbed.Field("Information", "" +

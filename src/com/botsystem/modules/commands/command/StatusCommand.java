@@ -24,15 +24,15 @@ public class StatusCommand extends BotCommand {
 
     private String possibleToString() {
         int index = 0;
-        String output = "";
+        StringBuilder output = new StringBuilder();
         for (String key : possible.keySet()) {
             if (index == 0)
-                output += key;
+                output.append(key);
             else
-                output += "/" + key;
+                output.append("/" + key);
             index++;
         }
-        return output;
+        return output.toString();
     }
 
     @Override

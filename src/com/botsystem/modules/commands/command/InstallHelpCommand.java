@@ -7,16 +7,19 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
+/**
+ * A bot command to display installation help
+ * @author BlockBa5her
+ *
+ */
 public class InstallHelpCommand extends BotCommand {
 
     private String cmd;
     private String reqPerm;
 
-    private Map<String, List<MessageEmbed.Field>> responses = new HashMap<>();
+    private Map<String, MessageEmbed.Field[]> responses;
 
     /**
      * Creates an instance of the "installhelp" command
@@ -27,6 +30,7 @@ public class InstallHelpCommand extends BotCommand {
         this.cmd = cmd;
         this.reqPerm = reqPerm;
 
+        responses = new HashMap<>();
         setResponses();
     }
 
@@ -34,45 +38,68 @@ public class InstallHelpCommand extends BotCommand {
      * Sets all of the responses to the command in the "responses" variable
      */
     private void setResponses() {
-        List<MessageEmbed.Field> f1 = new LinkedList<>();
+    	
+    	/*
+    	 * This just sets the HashMap's responses
+    	 */
 
-        f1.add(new MessageEmbed.Field("Depreciated Version", "" +
-                "This version is depreciated, please upgrade to the latest version " +
-                "[here](https://github.com/DispatchSystems/DispatchSystem/releases)", false));
-
-        List<MessageEmbed.Field> f2 = new LinkedList<>();
-
-        f2.add(new MessageEmbed.Field("Step 1", "" +
-                "Download the release.zip file from [here](https://github.com/DispatchSystems/DispatchSystem/releases) (if not done already)", false));
-        f2.add(new MessageEmbed.Field("Step 2", "" +
-                "Unpack the .zip file using 7zip or WinRaR", false));
-        f2.add(new MessageEmbed.Field("Step 3", "" +
-                "Drag the folder `dispatchsystem` inside of the `FiveM Resource` folder into your FiveM resources folder", false));
-        f2.add(new MessageEmbed.Field("Step 4", "" +
-                "***This and onward are optional.***\nPort forward port `33333` to use Terminal", false));
-        f2.add(new MessageEmbed.Field("Step 5", "" +
-                "Change the `settings.ini` file inside of the `Terminal` folder, then open the `Terminal.exe` to run the terminal", false));
-
-        List<MessageEmbed.Field> f3 = new LinkedList<>();
-
-        f3.add(new MessageEmbed.Field("Step 1", "" +
-                "No download available, get from the channel <#403769028793073665>", false));
-        f3.add(new MessageEmbed.Field("Step 2", "" +
-                "Unpack the .zip file using 7zip or WinRaR", false));
-        f3.add(new MessageEmbed.Field("Step 3", "" +
-                "Drag the folder `dispatchsystem` and `ds-main` inside of the `FiveM Resources` folder into your FiveM server's resources folder", false));
-        f3.add(new MessageEmbed.Field("Step 4", "" +
-                "Drag the `dispatchsystem.cfg` that's inside of the `FiveM Resources` folder into your root FiveM directory", false));
-        f3.add(new MessageEmbed.Field("Step 5", "" +
-                "Inside of the `server.cfg`, put the line `exec dispatchsystem.cfg` for the last line", false));
-        f3.add(new MessageEmbed.Field("Step 6", "" +
-                "***This and onward are optional.***\nPort forward port `33333` to use Terminal", false));
-        f3.add(new MessageEmbed.Field("Step 7", "" +
-                "Change the `settings.ini` file inside of the `Terminal` folder, then open the `Terminal.exe` to run the terminal", false));
-
-        responses.put("1", f1);
-        responses.put("2", f2);
-        responses.put("3", f2);
+        responses.put("1", new MessageEmbed.Field[] {
+        		new MessageEmbed.Field(
+        				"Depreciated Version",
+                        "This version is depreciated, please upgrade to the latest version [here](https://github.com/DispatchSystems/DispatchSystem/releases)", 
+                        false)
+        });
+        responses.put("2", new MessageEmbed.Field[] {
+        		new MessageEmbed.Field(
+        				"Step 1",
+                        "Download the release.zip file from [here](https://github.com/DispatchSystems/DispatchSystem/releases) (if not done already)",
+                        false),
+        		new MessageEmbed.Field(
+        				"Step 2",
+                        "Unpack the .zip file using 7zip or WinRaR", 
+                        false),
+        		new MessageEmbed.Field(
+        				"Step 3",
+                        "Drag the folder `dispatchsystem` inside of the `FiveM Resource` folder into your FiveM resources folder",
+                        false),
+        		new MessageEmbed.Field(
+        				"Step 4",
+                        "***This and onward are optional.***\nPort forward port `33333` to use Terminal",
+                        false),
+        		new MessageEmbed.Field("Step 5",
+                        "Change the `settings.ini` file inside of the `Terminal` folder, then open the `Terminal.exe` to run the terminal",
+                        false)
+        });
+        responses.put("3", new MessageEmbed.Field[] {
+        		new MessageEmbed.Field(
+        				"Step 1",
+                        "No download available, get from the channel <#403769028793073665>",
+                        false),
+        		new MessageEmbed.Field(
+        				"Step 2",
+                        "Unpack the .zip file using 7zip or WinRaR",
+                        false),
+        		new MessageEmbed.Field(
+        				"Step 3",
+                        "Drag the folder `dispatchsystem` and `ds-main` inside of the `FiveM Resources` folder into your FiveM server's resources folder",
+                        false),
+        		new MessageEmbed.Field(
+        				"Step 4",
+                        "Drag the `dispatchsystem.cfg` that's inside of the `FiveM Resources` folder into your root FiveM directory",
+                        false),
+        		new MessageEmbed.Field(
+        				"Step 5",
+                        "Inside of the `server.cfg`, put the line `exec dispatchsystem.cfg` for the last line",
+                        false),
+        		new MessageEmbed.Field(
+        				"Step 6",
+                        "***This and onward are optional.***\nPort forward port `33333` to use Terminal",
+                        false),
+        		new MessageEmbed.Field(
+        				"Step 7",
+                        "Change the `settings.ini` file inside of the `Terminal` folder, then open the `Terminal.exe` to run the terminal",
+                        false)
+        });
     }
 
     /**
@@ -82,9 +109,12 @@ public class InstallHelpCommand extends BotCommand {
      */
     @Override
     public void onInvoke(Message m, String[] args) {
+    	// new embed
         BotSystemEmbed emb = new BotSystemEmbed();
 
+        // if no arguments
         if (args.length == 0) {
+        	// say so and return
             emb.setTitle("No Version Inputted");
             emb.setDescription("" +
                     "You need to include a version as an argument in this command.\n\n" +
@@ -93,17 +123,19 @@ public class InstallHelpCommand extends BotCommand {
             return;
         }
 
-        for (String key : responses.keySet()) {
-            if (args[0].startsWith(key)) {
-                for (MessageEmbed.Field f : responses.get(key)) {
-                    emb.addField(f);
+        for (String key : responses.keySet()) { // for every key
+            if (args[0].startsWith(key)) { // if input starts with the key
+                for (MessageEmbed.Field f : responses.get(key)) { // for every field
+                    emb.addField(f); // add field to embed
                 }
 
+                // queue embed to channel after adding instructions
                 m.getChannel().sendMessage(emb.build()).queue();
-                return;
+                return; // return to not do below
             }
         }
 
+        // add information saying it couldn't find the version, and queue msg
         emb.setTitle("Invalid Version Inputted");
         emb.setDescription("" +
                 "You inputted a version that doesn't exist!\n\n" +
