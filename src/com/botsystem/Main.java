@@ -2,15 +2,34 @@ package com.botsystem;
 
 import com.botsystem.console.commands.ConsoleCommand;
 import com.botsystem.console.commands.ConsoleCommands;
-import com.botsystem.console.commands.command.*;
+import com.botsystem.console.commands.command.ConsoleGameCommand;
+import com.botsystem.console.commands.command.ConsoleHelpCommand;
+import com.botsystem.console.commands.command.ConsoleNicknameCommand;
+import com.botsystem.console.commands.command.ConsoleSayCommand;
+import com.botsystem.console.commands.command.ConsoleStatusCommand;
+import com.botsystem.console.commands.command.ConsoleTestCommand;
+import com.botsystem.console.commands.command.ConsoleUptimeCommand;
 import com.botsystem.core.BotSystem;
 import com.botsystem.core.BotSystemModule;
 import com.botsystem.exceptions.ExceptionHelper;
 import com.botsystem.extensions.Pair;
 import com.botsystem.modules.commands.BotCommand;
 import com.botsystem.modules.commands.BotCommandsModule;
-import com.botsystem.modules.commands.command.*;
+import com.botsystem.modules.commands.command.BanCommand;
+import com.botsystem.modules.commands.command.CommandsCommand;
+import com.botsystem.modules.commands.command.GameCommand;
+import com.botsystem.modules.commands.command.HelpCommand;
+import com.botsystem.modules.commands.command.InstallHelpCommand;
+import com.botsystem.modules.commands.command.KickCommand;
+import com.botsystem.modules.commands.command.MonitorCommand;
+import com.botsystem.modules.commands.command.NicknameCommand;
+import com.botsystem.modules.commands.command.PruneCommand;
+import com.botsystem.modules.commands.command.RoleInfoCommand;
+import com.botsystem.modules.commands.command.SaveCommand;
+import com.botsystem.modules.commands.command.StatusCommand;
+import com.botsystem.modules.commands.command.UptimeCommand;
 import com.botsystem.modules.display.DisplayModule;
+import com.botsystem.modules.monitor.MonitorModule;
 import com.botsystem.modules.noeveryone.NoEveryoneModule;
 import com.botsystem.modules.permissions.PermissionsModule;
 import com.botsystem.modules.pingpong.PingPongModule;
@@ -19,7 +38,13 @@ import com.botsystem.modules.suggestions.SuggestionsModule;
 import com.botsystem.modules.welcome.WelcomeModule;
 import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.requests.RestAction;
-import org.apache.commons.cli.*;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -152,6 +177,7 @@ public class Main {
                 // "core" modules
                 new DisplayModule(),
                 new PermissionsModule(permissions),
+                new MonitorModule(),
 
                 // non-required modules (these interact with core modules though)
                 new PingPongModule(),
@@ -163,6 +189,7 @@ public class Main {
                         // user commands
                         new UptimeCommand("uptime", "user"),
                         new InstallHelpCommand("installhelp", "user"),
+                        new MonitorCommand("monitor", "user"),
 
                         // moderator commands
                         new RoleInfoCommand("roleinfo", "moderator"),
