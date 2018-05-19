@@ -7,7 +7,6 @@ import com.botsystem.core.BotSystemModule;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 
-import javax.annotation.Nullable;
 import java.time.Instant;
 
 /**
@@ -59,7 +58,7 @@ public class DisplayModule extends BotSystemModule {
      * Sets the override online status for the bot (null for bot-config.json)
      * @param status The online status to override with
      */
-    public void setStatus(@Nullable String status) {
+    public void setStatus(String status) {
         this.overrideStatus = status; // overriding the status
     }
 
@@ -67,7 +66,7 @@ public class DisplayModule extends BotSystemModule {
      * Sets the override game for the bot (null for bot-config.json)
      * @param game The game to override with
      */
-    public void setGame(@Nullable String game) {
+    public void setGame(String game) {
         this.overrideGame = game; // overriding the game
     }
 
@@ -75,7 +74,7 @@ public class DisplayModule extends BotSystemModule {
      * Sets the override nickname for the bot (null for bot-config.json)
      * @param nickname The nickname to override with
      */
-    public void setNickname(@Nullable String nickname) {
+    public void setNickname(String nickname) {
         this.overrideNickname = nickname; // overriding the nickname
     }
 

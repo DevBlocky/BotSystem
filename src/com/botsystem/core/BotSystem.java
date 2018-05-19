@@ -41,9 +41,7 @@ public class BotSystem implements Runnable {
                 bot = builder.buildAsync();
             } catch (LoginException e) {
                 ExceptionHelper.throwException(e);
-            }/* catch (InterruptedException e) {
-                ExceptionHelper.throwException(e);
-            }*/
+            }
 
             bot.addEventListener(eventHandler);
             runThread = new Thread(this);

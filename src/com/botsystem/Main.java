@@ -1,15 +1,15 @@
 package com.botsystem;
 
 import com.botsystem.console.commands.ConsoleCommand;
-import com.botsystem.console.commands.ConsoleCommands;
 import com.botsystem.console.commands.command.ConsoleGameCommand;
 import com.botsystem.console.commands.command.ConsoleHelpCommand;
 import com.botsystem.console.commands.command.ConsoleNicknameCommand;
+import com.botsystem.console.commands.command.ConsoleRestartCommand;
 import com.botsystem.console.commands.command.ConsoleSayCommand;
+import com.botsystem.console.commands.command.ConsoleShutdownCommand;
 import com.botsystem.console.commands.command.ConsoleStatusCommand;
 import com.botsystem.console.commands.command.ConsoleTestCommand;
 import com.botsystem.console.commands.command.ConsoleUptimeCommand;
-import com.botsystem.core.BotSystem;
 import com.botsystem.core.BotSystemModule;
 import com.botsystem.exceptions.ExceptionHelper;
 import com.botsystem.extensions.Pair;
@@ -24,8 +24,10 @@ import com.botsystem.modules.commands.command.KickCommand;
 import com.botsystem.modules.commands.command.MonitorCommand;
 import com.botsystem.modules.commands.command.NicknameCommand;
 import com.botsystem.modules.commands.command.PruneCommand;
+import com.botsystem.modules.commands.command.RestartCommand;
 import com.botsystem.modules.commands.command.RoleInfoCommand;
 import com.botsystem.modules.commands.command.SaveCommand;
+import com.botsystem.modules.commands.command.ShutdownCommand;
 import com.botsystem.modules.commands.command.StatusCommand;
 import com.botsystem.modules.commands.command.UptimeCommand;
 import com.botsystem.modules.display.DisplayModule;
@@ -36,7 +38,7 @@ import com.botsystem.modules.pingpong.PingPongModule;
 import com.botsystem.modules.report.ReportModule;
 import com.botsystem.modules.suggestions.SuggestionsModule;
 import com.botsystem.modules.welcome.WelcomeModule;
-import net.dv8tion.jda.core.events.ReadyEvent;
+
 import net.dv8tion.jda.core.requests.RestAction;
 
 import org.apache.commons.cli.CommandLine;
@@ -45,8 +47,8 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.LinkedList;
 
@@ -77,11 +79,9 @@ public class Main {
      * The CommandLine arguments
      */
     public static CommandLine COMMAND_LINE;
-
-    /**
-     * ConsoleCommands, for user input and such
-     */
-    private static ConsoleCommands consoleCommands;
+    
+    private static BotBottle bottle;
+    private static Thread botThread;
 
     /**
      * Sets the global thread exception handler
@@ -132,6 +132,21 @@ public class Main {
             Debug.trace("adding permissions: " + jObj.get("name") + " " + jObj.get("id")); // tracing information
         }
     }
+    
+    private static void displayCliHelp() {
+        StringBuilder output = new StringBuilder("botsystem.jar command arguments: \n");
+
+        for (Option opt : COMMAND_LINE.getOptions()) { // going through CLI options
+
+            output.append("    -").append(opt.getOpt()); // adding option to output
+            if (opt.getLongOpt() != null) // if has long option
+                output.append(", --").append(opt.getLongOpt()); // add long option to output
+
+            output.append(" - ").append(opt.getDescription()).append("\n"); // adding desc and new line
+        }
+
+        System.out.println(output); // printing out
+    }
 
     /**
      * Main method for the entire bot
@@ -144,18 +159,7 @@ public class Main {
 
         // if has options "help", show and return
         if (COMMAND_LINE.hasOption("help")) {
-            StringBuilder output = new StringBuilder("botsystem.jar command arguments: \n");
-
-            for (Option opt : COMMAND_LINE.getOptions()) { // going through CLI options
-
-                output.append("    -").append(opt.getOpt()); // adding option to output
-                if (opt.getLongOpt() != null) // if has long option
-                    output.append(", --").append(opt.getLongOpt()); // add long option to output
-
-                output.append(" - ").append(opt.getDescription()).append("\n"); // adding desc and new line
-            }
-
-            System.out.println(output); // printing out
+        	displayCliHelp();
             return; // returning before bot creation
         }
 
@@ -167,13 +171,31 @@ public class Main {
         RestAction.setPassContext(true);
         RestAction.DEFAULT_FAILURE = Throwable::printStackTrace;
 
-        // getting the token from config
-        final String TOKEN = CONFIG.getString("token");
-
-        BotSystem bot = new BotSystem(TOKEN); // creating the bot
-
-        // adding modules
-        bot.addModuleRange(new BotSystemModule[] {
+        createInstance();
+    }
+    
+    public boolean isInstanceRunning() {
+    	return botThread != null;
+    }
+    
+    public static void createInstance() {
+    	
+    	if (botThread != null)
+    		throw new RuntimeException("instance already running");
+    	
+        final ConsoleCommand[] CONSOLE_COMMANDS = {
+                new ConsoleHelpCommand("help"),
+                new ConsoleUptimeCommand("uptime"),
+                new ConsoleSayCommand("say"),
+                new ConsoleStatusCommand("status"),
+                new ConsoleGameCommand("game"),
+                new ConsoleNicknameCommand("nickname"),
+                new ConsoleTestCommand("test"),
+                new ConsoleShutdownCommand("shutdown"),
+                new ConsoleRestartCommand("restart")
+        };
+        
+        final BotSystemModule[] MODULES = {
                 // "core" modules
                 new DisplayModule(),
                 new PermissionsModule(permissions),
@@ -201,36 +223,29 @@ public class Main {
                         new StatusCommand("status", "staff"),
                         new GameCommand("game", "staff"),
                         new NicknameCommand("nickname", "staff"),
-                        new SaveCommand("save", "staff", "saves")
+                        new SaveCommand("save", "staff", "saves"),
+                        new RestartCommand("restart", "staff"),
+                        new ShutdownCommand("shutdown", "staff")
                 }),
                 new NoEveryoneModule("moderator"),
                 new ReportModule(),
                 new WelcomeModule(),
                 new SuggestionsModule()
-        });
-
-        // when the bot is ready
-        bot.addEvent(ReadyEvent.class, e -> {
-            Debug.trace("initializing console commands, and command modules");
-            // setup and add console commands
-            consoleCommands = new ConsoleCommands(bot, new ConsoleCommand[] {
-                    new ConsoleHelpCommand("help"),
-                    new ConsoleUptimeCommand("uptime"),
-                    new ConsoleSayCommand("say"),
-                    new ConsoleStatusCommand("status"),
-                    new ConsoleGameCommand("game"),
-                    new ConsoleNicknameCommand("nickname"),
-                    new ConsoleTestCommand("test"),
-            });
-            consoleCommands.start();
-        });
-
-        try {
-            bot.login(); // tryna start bot
-        } catch (Exception e) { // if exception
-            System.err.println("Whoops! Looks like there was a problem with the bot...\n");
-            System.err.println(ExceptionHelper.getFullExceptionString(e));
-            System.exit(2); // exit with code "2"
-        }
+        };
+    	
+    	botThread = new Thread(() -> {
+    		bottle = new BotBottle(MODULES, CONSOLE_COMMANDS);
+    	});
+    	botThread.setName("BotSystem Main");
+    	botThread.start();
+    }
+    public static void destroyInstance() {
+    	if (botThread == null)
+    		throw new RuntimeException("instance not running");
+    	
+		bottle.dispose();
+    	bottle = null;
+    	botThread.interrupt();
+    	botThread = null;
     }
 }

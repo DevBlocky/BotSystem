@@ -37,6 +37,20 @@ public class MonitorModule extends BotSystemModule {
 		return memoryBean.getHeapMemoryUsage().getUsed() + memoryBean.getNonHeapMemoryUsage().getUsed();
 	}
 	/**
+	 * Get's the heap allocated memory in the process
+	 * @return Total amount of heap size in bytes
+	 */
+	public long getProcessHeapAllocationSize() {
+		return memoryBean.getHeapMemoryUsage().getUsed();
+	}
+	/**
+	 * Get's the non-heap allocated memory in the process
+	 * @return Total amount of heap size in bytes
+	 */
+	public long getProcessNonheapAllocationSize() {
+		return memoryBean.getNonHeapMemoryUsage().getUsed();
+	}
+	/**
 	 * Get's the system memory usage
 	 * @return Total amount of system memory usage in bytes
 	 */

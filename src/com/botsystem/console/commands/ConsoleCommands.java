@@ -3,6 +3,7 @@ package com.botsystem.console.commands;
 import com.botsystem.Debug;
 import com.botsystem.core.BotSystem;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -41,7 +42,6 @@ public class ConsoleCommands extends Thread implements Iterable<ConsoleCommand> 
     /**
      * Used for finding the next line of the console
      */
-    private Scanner scan;
     private BotSystem bot;
 
     /**
@@ -51,7 +51,6 @@ public class ConsoleCommands extends Thread implements Iterable<ConsoleCommand> 
     public ConsoleCommands(BotSystem bot) {
         this.bot = bot;
         commands = new LinkedList<>();
-        scan = new Scanner(System.in); // create a scanner with the console input stream
     }
 
     /**
@@ -111,15 +110,24 @@ public class ConsoleCommands extends Thread implements Iterable<ConsoleCommand> 
      * A loop for the thread containing the essentials for the commands
      */
     @Override
-    public void run() {
-        while (true) {
+    public void run() {    	
+        while (!this.isInterrupted()) {
         	String input = null;
-            try {
-            	input = scan.nextLine(); // waits thread until next line
+            try (Scanner scan = new Scanner(System.in)) {
+            	Thread.sleep(50); // prevent CPU shred
+            	
+            	if (System.in.available() > 0) // prevent thread block
+            		input = scan.nextLine();
+            	
             } catch (NoSuchElementException e) { // usually occurs when process exit
             	Debug.trace("ConsoleCommands safe console reader shutdown enabled");
             	break;
-            }
+            } catch (IOException e) {
+            	
+            } catch (InterruptedException e) {}
+            
+            if (input == null) // continuing if there was no input
+            	continue;
 
             CommandInvokeInformation invokeInfo = parseCmd(input); // parse the command with parseCmd()
 
