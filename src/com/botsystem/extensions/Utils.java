@@ -103,7 +103,7 @@ public class Utils {
         return possible;
     }
     
-    public static Thread createTimeout(Runnable r, int waitMillis) {
+    public static Thread createTimeout(Runnable r, int waitMillis, String name) {
     	Thread t = new Thread(() -> { // new thread
     		try {
 				Thread.sleep(waitMillis); // wait for amount of seconds
@@ -114,5 +114,8 @@ public class Utils {
     	});
     	t.start(); // start thread
     	return t; // return thread
+    }
+    public static Thread createTimeout(Runnable r, int waitMillis) {
+    	return createTimeout(r, waitMillis, "Timeout-Thread");
     }
 }

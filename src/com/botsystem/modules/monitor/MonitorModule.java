@@ -2,6 +2,7 @@ package com.botsystem.modules.monitor;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
+import java.time.Instant;
 
 import com.botsystem.core.BotSystemModule;
 import com.sun.management.OperatingSystemMXBean;
@@ -15,19 +16,24 @@ public class MonitorModule extends BotSystemModule {
 	private OperatingSystemMXBean systemBean;
 	private MemoryMXBean memoryBean;
 	
+	private double processCpu;
+	private double systemCpu;
+	
+	private Instant lastTime = Instant.ofEpochMilli(0);
+	
 	/**
 	 * Get the process's CPU load
 	 * @return The CPU load in decimal form
 	 */
 	public double getProcessCpuLoad() {
-		return systemBean.getProcessCpuLoad();
+		return processCpu;
 	}
 	/**
 	 * Get's the system's CPU load
 	 * @return The CPU load in decimal form
 	 */
 	public double getSystemCpuLoad() {
-		return systemBean.getSystemCpuLoad();
+		return systemCpu;
 	}
 	/**
 	 * Get's the virtual memory usage
@@ -67,8 +73,16 @@ public class MonitorModule extends BotSystemModule {
 	
 	@Override
 	public void onTick() {
+		if ((Instant.now().toEpochMilli() - lastTime.toEpochMilli()) < 1500)
+			return;
+			
+		lastTime = Instant.now();
+		
 		// setting the beans and such
 		systemBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 		memoryBean = ManagementFactory.getMemoryMXBean();
+		
+		processCpu = systemBean.getProcessCpuLoad();
+		systemCpu = systemBean.getSystemCpuLoad();
 	}
 }

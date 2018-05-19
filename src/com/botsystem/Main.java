@@ -235,6 +235,7 @@ public class Main {
     	
     	botThread = new Thread(() -> {
     		bottle = new BotBottle(MODULES, CONSOLE_COMMANDS);
+    		bottle.start();
     	});
     	botThread.setName("BotSystem Main");
     	botThread.start();

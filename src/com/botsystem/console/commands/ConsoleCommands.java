@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * A thread based system for getting inputted console commands
+ * A thread based system for getting inputed console commands
  *
  * @author BlockBa5her
  * (C) BlockBa5her
@@ -105,19 +105,32 @@ public class ConsoleCommands extends Thread implements Iterable<ConsoleCommand> 
     public Iterator<ConsoleCommand> iterator() {
         return commands.iterator();
     }
+    
+    private boolean keepAlive = true;
+    /**
+     * Stops the Commands from executing
+     */
+    @Override
+    public void interrupt() {
+    	keepAlive = false;
+    }
 
     /**
      * A loop for the thread containing the essentials for the commands
      */
     @Override
-    public void run() {    	
-        while (!this.isInterrupted()) {
-        	String input = null;
-            try (Scanner scan = new Scanner(System.in)) {
+    public void run() {
+    	// creating scanner for console input
+    	@SuppressWarnings("resource")
+		Scanner scan = new Scanner(System.in);
+    	
+        while (keepAlive) { // while thread still needs to run
+        	String input = null; // create input variable
+            try {
             	Thread.sleep(50); // prevent CPU shred
             	
             	if (System.in.available() > 0) // prevent thread block
-            		input = scan.nextLine();
+            		input = scan.nextLine(); // get input line
             	
             } catch (NoSuchElementException e) { // usually occurs when process exit
             	Debug.trace("ConsoleCommands safe console reader shutdown enabled");
@@ -137,6 +150,10 @@ public class ConsoleCommands extends Thread implements Iterable<ConsoleCommand> 
                 System.out.println("Command not found!"); // print out saying the command wasn't found
             }
         }
+        
+        // close scanner after thread is done
+        //scan.close();
+        //Debug.trace("close console scanner");
     }
 
     /**
