@@ -8,6 +8,7 @@ import net.dv8tion.jda.core.entities.MessageEmbed;
 
 /**
  * A bot command to display helpful information about the bot
+ * 
  * @author BlockBa5her
  *
  */
@@ -18,8 +19,11 @@ public class HelpCommand extends BotCommand {
 
     /**
      * Creates an Instance of the "help" command
-     * @param cmd The command to invoke with
-     * @param reqPerm The required perm to invoke with
+     * 
+     * @param cmd
+     *            The command to invoke with
+     * @param reqPerm
+     *            The required perm to invoke with
      */
     public HelpCommand(String cmd, String reqPerm) {
         this.cmd = cmd;
@@ -28,26 +32,25 @@ public class HelpCommand extends BotCommand {
 
     @Override
     public void onInvoke(Message m, String[] args) {
-    	// create embed
+        // create embed
         BotSystemEmbed emb = new BotSystemEmbed();
 
         /*
          * Below is basically the help command
          * 
-         * The "help" command just displays the bot's information
-         * Because no operations are taking place, it's a very simple command
+         * The "help" command just displays the bot's information Because no operations
+         * are taking place, it's a very simple command
          */
-        
+
         emb.setTitle("BotSystem Help");
 
-        emb.addField(new MessageEmbed.Field("Information", "" +
-                "BotSystem is a simple bot built for the DispatchSystem server. " +
-                "It's here to help people install DispatchSystem without Support Staff, and even have some fun jokes.\n\n" +
-                "Note: This is a WIP (Work in progress), so not all features may be available at the moment", false));
-        emb.addField(new MessageEmbed.Field("Commands", "" +
-                "Use `^commands` to view all of BotSystem's commands", false));
-        emb.addField(new MessageEmbed.Field("Version", "" +
-                Main.CONFIG.getString("version"), false));
+        emb.addField(new MessageEmbed.Field("Information", ""
+                + "BotSystem is a simple bot built for the DispatchSystem server. "
+                + "It's here to help people install DispatchSystem without Support Staff, and even have some fun jokes.\n\n"
+                + "Note: This is a WIP (Work in progress), so not all features may be available at the moment", false));
+        emb.addField(
+                new MessageEmbed.Field("Commands", "" + "Use `^commands` to view all of BotSystem's commands", false));
+        emb.addField(new MessageEmbed.Field("Version", "" + Main.CONFIG.getString("version"), false));
 
         m.getChannel().sendMessage(emb.build()).queue();
     }

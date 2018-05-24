@@ -9,8 +9,7 @@ import java.util.*;
 /**
  * A thread based system for getting inputed console commands
  *
- * @author BlockBa5her
- * (C) BlockBa5her
+ * @author BlockBa5her (C) BlockBa5her
  */
 public class ConsoleCommands extends Thread implements Iterable<ConsoleCommand> {
 
@@ -29,8 +28,11 @@ public class ConsoleCommands extends Thread implements Iterable<ConsoleCommand> 
 
         /**
          * Initializes the "CommandInvokeInformation" class
-         * @param arguments The command arguments
-         * @param cmd The ConsoleCommand that goes with everything
+         * 
+         * @param arguments
+         *            The command arguments
+         * @param cmd
+         *            The ConsoleCommand that goes with everything
          */
         public CommandInvokeInformation(String[] arguments, ConsoleCommand cmd) {
             this.arguments = arguments;
@@ -46,7 +48,9 @@ public class ConsoleCommands extends Thread implements Iterable<ConsoleCommand> 
 
     /**
      * Initializes the ConsoleCommands class, with the bot
-     * @param bot The bot to use the commands with
+     * 
+     * @param bot
+     *            The bot to use the commands with
      */
     public ConsoleCommands(BotSystem bot) {
         this.bot = bot;
@@ -55,6 +59,7 @@ public class ConsoleCommands extends Thread implements Iterable<ConsoleCommand> 
 
     /**
      * Getter for the BotSystem API
+     * 
      * @return Returning BotSystem API
      */
     public BotSystem getBot() {
@@ -63,6 +68,7 @@ public class ConsoleCommands extends Thread implements Iterable<ConsoleCommand> 
 
     /**
      * Getter for the ConsoleCommands
+     * 
      * @return All of the ConsoleCommand in the class
      */
     public ConsoleCommand[] getCommands() {
@@ -71,8 +77,11 @@ public class ConsoleCommands extends Thread implements Iterable<ConsoleCommand> 
 
     /**
      * Initializes ConsoleCommands with preset ConsoleCommand[]
-     * @param bot The bot to use the commands with
-     * @param initialCommands The commands to add at the start
+     * 
+     * @param bot
+     *            The bot to use the commands with
+     * @param initialCommands
+     *            The commands to add at the start
      */
     public ConsoleCommands(BotSystem bot, ConsoleCommand[] initialCommands) {
         this(bot);
@@ -81,7 +90,9 @@ public class ConsoleCommands extends Thread implements Iterable<ConsoleCommand> 
 
     /**
      * Adds a console command to total commands
-     * @param cmd The command to add
+     * 
+     * @param cmd
+     *            The command to add
      */
     public void addCommand(ConsoleCommand cmd) {
         cmd.setParent(this); // setting the command parent
@@ -90,7 +101,9 @@ public class ConsoleCommands extends Thread implements Iterable<ConsoleCommand> 
 
     /**
      * Adds a range of commands to the total commands
-     * @param cmds The commands to add
+     * 
+     * @param cmds
+     *            The commands to add
      */
     public void addCommandRange(Iterable<ConsoleCommand> cmds) {
         for (ConsoleCommand cmd : cmds) // for ever command
@@ -99,20 +112,22 @@ public class ConsoleCommands extends Thread implements Iterable<ConsoleCommand> 
 
     /**
      * Get all of the commands
+     * 
      * @return The iterator for the ConsoleCommands
      */
     @Override
     public Iterator<ConsoleCommand> iterator() {
         return commands.iterator();
     }
-    
+
     private boolean keepAlive = true;
+
     /**
      * Stops the Commands from executing
      */
     @Override
     public void interrupt() {
-    	keepAlive = false;
+        keepAlive = false;
     }
 
     /**
@@ -120,27 +135,28 @@ public class ConsoleCommands extends Thread implements Iterable<ConsoleCommand> 
      */
     @Override
     public void run() {
-    	// creating scanner for console input
-    	@SuppressWarnings("resource")
-		Scanner scan = new Scanner(System.in);
-    	
+        // creating scanner for console input
+        @SuppressWarnings("resource")
+        Scanner scan = new Scanner(System.in);
+
         while (keepAlive) { // while thread still needs to run
-        	String input = null; // create input variable
+            String input = null; // create input variable
             try {
-            	Thread.sleep(50); // prevent CPU shred
-            	
-            	if (System.in.available() > 0) // prevent thread block
-            		input = scan.nextLine(); // get input line
-            	
+                Thread.sleep(50); // prevent CPU shred
+
+                if (System.in.available() > 0) // prevent thread block
+                    input = scan.nextLine(); // get input line
+
             } catch (NoSuchElementException e) { // usually occurs when process exit
-            	Debug.trace("ConsoleCommands safe console reader shutdown enabled");
-            	break;
+                Debug.trace("ConsoleCommands safe console reader shutdown enabled");
+                break;
             } catch (IOException e) {
-            	
-            } catch (InterruptedException e) {}
-            
+
+            } catch (InterruptedException e) {
+            }
+
             if (input == null) // continuing if there was no input
-            	continue;
+                continue;
 
             CommandInvokeInformation invokeInfo = parseCmd(input); // parse the command with parseCmd()
 
@@ -150,15 +166,17 @@ public class ConsoleCommands extends Thread implements Iterable<ConsoleCommand> 
                 System.out.println("Command not found!"); // print out saying the command wasn't found
             }
         }
-        
+
         // close scanner after thread is done
-        //scan.close();
-        //Debug.trace("close console scanner");
+        // scan.close();
+        // Debug.trace("close console scanner");
     }
 
     /**
      * Parsed a given string to find the command
-     * @param raw The raw string to parse
+     * 
+     * @param raw
+     *            The raw string to parse
      * @return Command Information with what parsed data it found
      */
     private CommandInvokeInformation parseCmd(String raw) {
@@ -168,7 +186,8 @@ public class ConsoleCommands extends Thread implements Iterable<ConsoleCommand> 
 
         for (ConsoleCommand command : commands) { // for every command
             if (command.getCmd().equals(cmd.toLowerCase())) { // if the commandCmd is equal to the given cmd
-                return new CommandInvokeInformation(split.toArray(new String[0]), command); // return the parsed information
+                return new CommandInvokeInformation(split.toArray(new String[0]), command); // return the parsed
+                                                                                            // information
             }
         }
 

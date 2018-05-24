@@ -11,6 +11,7 @@ import net.dv8tion.jda.core.utils.PermissionUtil;
 
 /**
  * Command for bot to kick a user
+ * 
  * @author BlockBa5her
  *
  */
@@ -24,9 +25,12 @@ public class KickCommand extends BotCommand {
     /**
      * Creates an instance of the "kick" command
      * 
-     * @param cmd        The text to invoke the command with
-     * @param reqPerm    The required user permission to invoke the command
-     * @param noKickPerm Same and above perms cannot be banned
+     * @param cmd
+     *            The text to invoke the command with
+     * @param reqPerm
+     *            The required user permission to invoke the command
+     * @param noKickPerm
+     *            Same and above perms cannot be banned
      */
     public KickCommand(String cmd, String reqPerm, String noKickPerm) {
         this.cmd = cmd;
@@ -36,22 +40,21 @@ public class KickCommand extends BotCommand {
 
     @Override
     public void onInvoke(Message m, String[] args) {
-    	// creating embed
+        // creating embed
         BotSystemEmbed emb = new BotSystemEmbed();
-        
+
         // getting permissions module
-        PermissionsModule permissions =
-                this.parent.getBot().getModule(PermissionsModule.class);
+        PermissionsModule permissions = this.parent.getBot().getModule(PermissionsModule.class);
 
         // if not mentioning anyone
         if (m.getMentionedMembers().size() == 0) {
-        	// say so and return
-            emb.setTitle("No Users"); 
+            // say so and return
+            emb.setTitle("No Users");
             emb.setDescription("No users were mentioned to kick");
             m.getChannel().sendMessage(emb.build()).queue();
             return;
         }
-        
+
         // getting the member to ban
         Member mToKick = m.getMentionedMembers().get(0);
 
@@ -59,7 +62,7 @@ public class KickCommand extends BotCommand {
         Guild g = m.getGuild();
         // checking if bot has kick permission
         if (!g.getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
-        	// if not, say so and return
+            // if not, say so and return
             emb.setTitle("Not Enough Permissions");
             emb.setDescription("I don't have the permission to kick");
             m.getChannel().sendMessage(emb.build()).queue();
@@ -68,10 +71,10 @@ public class KickCommand extends BotCommand {
 
         // checking if has internal permission to kick
         if (permissions.checkUserPerm(this.noKickPerm, mToKick)) {
-        	// if not, say so and return
+            // if not, say so and return
             emb.setTitle("Internal Permission Error");
-            emb.setDescription("You don't have permissions to kick people with the permission level `" + permissions
-                    .getMemberHighestPerm(mToKick).getKey() + "`");
+            emb.setDescription("You don't have permissions to kick people with the permission level `"
+                    + permissions.getMemberHighestPerm(mToKick).getKey() + "`");
 
             m.getChannel().sendMessage(emb.build()).queue();
             return;
@@ -80,17 +83,17 @@ public class KickCommand extends BotCommand {
         // is higher on discord permission hierarchy
         if (PermissionUtil.canInteract(g.getSelfMember(), mToKick)) {
             g.getController().kick(mToKick, "Kicked by BotSystem").submit(); // kick with BotSystem
-            
+
             // setup embed
             emb.setTitle("User Kicked");
             emb.setDescription("User " + mToKick.getUser().getName() + " has been kicked from this server");
         } else {
-        	// if can't touch them
-        	
-        	// setup embed
+            // if can't touch them
+
+            // setup embed
             emb.setTitle("Invalid Ban User");
-            emb.setDescription("The user " + mToKick.getUser().getName() + " cannot be kicked because they have higher" +
-                    " permissions than the bot");
+            emb.setDescription("The user " + mToKick.getUser().getName() + " cannot be kicked because they have higher"
+                    + " permissions than the bot");
         }
 
         // send embed

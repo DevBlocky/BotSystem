@@ -13,7 +13,8 @@ public abstract class BotSystemModule {
         Debug.trace("starting " + this.getClass().getSimpleName());
     }
 
-    public void onTick() {}
+    public void onTick() {
+    }
 
     public String getName() {
         return this.getClass().getSimpleName();

@@ -18,18 +18,18 @@ public class BotConfig {
 
     public void configParse() {
         try {
-        	// debug
+            // debug
             Debug.trace("loaded permissions into JSONObject buffer");
-            
+
             // reading the file
             File fr = new File(file); // get file obj
             FileInputStream fis = new FileInputStream(fr); // create input stream from file
-            ByteBuffer bf = ByteBuffer.allocate((int)fr.length()); // new byte buffer with fr length
+            ByteBuffer bf = ByteBuffer.allocate((int) fr.length()); // new byte buffer with fr length
             fis.read(bf.array()); // reading file into buffer
             fis.close(); // close the stream
             new String();
             String str = new String(bf.array(), "UTF-8"); // get raw string out of data
-            
+
             // parsing JSON
             base = new JSONObject(str);
         } catch (IOException e) {

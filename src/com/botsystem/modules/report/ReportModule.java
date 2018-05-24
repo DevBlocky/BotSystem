@@ -10,21 +10,26 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Module for BotSystem detecting when the report reaction as added to a message then handling it
+ * Module for BotSystem detecting when the report reaction as added to a message
+ * then handling it
+ * 
  * @author BlockBa5her
  *
  */
 public class ReportModule extends BotSystemModule {
 
-	/**
-	 * The last reported message
-	 */
+    /**
+     * The last reported message
+     */
     private String lastReportedMessageId = "";
 
     /**
      * The method invoked when there is a given report
-     * @param msg The message that has been reported
-     * @param reac The reaction used to report it
+     * 
+     * @param msg
+     *            The message that has been reported
+     * @param reac
+     *            The reaction used to report it
      */
     private void onReport(Message msg, MessageReaction reac) {
 
@@ -41,11 +46,13 @@ public class ReportModule extends BotSystemModule {
 
             BotSystemEmbed dmEmb = new BotSystemEmbed(); // create new embed
             // add information fields
-            dmEmb.addField(new MessageEmbed.Field("Info", "" +
-                    "We have sent your report for our moderators to review", false));
-            dmEmb.addField(new MessageEmbed.Field("Policy", "" +
-                    "If you are seen abusing or spamming the report system, " +
-                    "you will be removed from the DispatchSystem server either temp or perm.", false));
+            dmEmb.addField(new MessageEmbed.Field("Info", "" + "We have sent your report for our moderators to review",
+                    false));
+            dmEmb.addField(
+                    new MessageEmbed.Field("Policy",
+                            "" + "If you are seen abusing or spamming the report system, "
+                                    + "you will be removed from the DispatchSystem server either temp or perm.",
+                            false));
 
             // send the embed in DMs with user
             usr.openPrivateChannel().complete().sendMessage(dmEmb.build()).complete();
@@ -55,20 +62,17 @@ public class ReportModule extends BotSystemModule {
         List<Member> mods = getMods(msg.getGuild());
         // for every mod in guild
         for (Member mod : mods) {
-        	// new embed
+            // new embed
             BotSystemEmbed modEmb = new BotSystemEmbed();
 
             // adding embed information fields
-            modEmb.addField(new MessageEmbed.Field("Information", "" +
-                    "This is an automated response from the bot about a user's message report", false));
-            modEmb.addField(new MessageEmbed.Field("Message Content",
-                    msg.getContentDisplay(), false));
-            modEmb.addField(new MessageEmbed.Field("Message Channel", "" +
-                    "<#" + msg.getChannel().getId() + ">", false));
-            modEmb.addField(new MessageEmbed.Field("Message Sender", "" +
-                    "<@" + msg.getAuthor().getId() + ">", false));
-            modEmb.addField(new MessageEmbed.Field("Reporter(s)",
-                    userNames.toString(), false));
+            modEmb.addField(new MessageEmbed.Field("Information",
+                    "" + "This is an automated response from the bot about a user's message report", false));
+            modEmb.addField(new MessageEmbed.Field("Message Content", msg.getContentDisplay(), false));
+            modEmb.addField(
+                    new MessageEmbed.Field("Message Channel", "" + "<#" + msg.getChannel().getId() + ">", false));
+            modEmb.addField(new MessageEmbed.Field("Message Sender", "" + "<@" + msg.getAuthor().getId() + ">", false));
+            modEmb.addField(new MessageEmbed.Field("Reporter(s)", userNames.toString(), false));
 
             // send embed to mod in DM
             mod.getUser().openPrivateChannel().complete().sendMessage(modEmb.build()).queue();
@@ -79,25 +83,27 @@ public class ReportModule extends BotSystemModule {
             reac.removeReaction(u).complete();
         }
     }
-    
+
     /**
      * The event handle for the GuildMessageReactionAddEvent
-     * @param event The event for the handle
+     * 
+     * @param event
+     *            The event for the handle
      */
     private void onGuildReaction(GuildMessageReactionAddEvent event) {
-    	// getting reaction and message
+        // getting reaction and message
         MessageReaction r = event.getReaction();
         Message m = event.getChannel().getMessageById(event.getMessageId()).complete();
-        
+
         // if is report reaction and wasn't last reported message
         if (r.getReactionEmote().getName().equals("report") && !m.getId().equals(lastReportedMessageId)) {
-        	onReport(m, event.getReaction()); // invoke the onReport event handler
+            onReport(m, event.getReaction()); // invoke the onReport event handler
         }
     }
 
     @Override
     public void onStart() {
-        super.onStart(); 
+        super.onStart();
 
         // add event handlers
         bot.addEvent(GuildMessageReactionAddEvent.class, this::onGuildReaction);
@@ -105,7 +111,9 @@ public class ReportModule extends BotSystemModule {
 
     /**
      * Gets all of the moderators in a certain guild
-     * @param g The guild to get all of the moderators in
+     * 
+     * @param g
+     *            The guild to get all of the moderators in
      * @return The list of moderators in the server
      */
     private List<Member> getMods(Guild g) {

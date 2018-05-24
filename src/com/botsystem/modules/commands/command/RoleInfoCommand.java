@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * A command to display info about server roles
+ * 
  * @author BlockBa5her
  *
  */
@@ -22,8 +23,11 @@ public class RoleInfoCommand extends BotCommand {
 
     /**
      * Creates an Instance of the "roleinfo" command
-     * @param cmd The command to invoke with
-     * @param reqPerm The required permission to invoke
+     * 
+     * @param cmd
+     *            The command to invoke with
+     * @param reqPerm
+     *            The required permission to invoke
      */
     public RoleInfoCommand(String cmd, String reqPerm) {
         this.reqPerm = reqPerm;

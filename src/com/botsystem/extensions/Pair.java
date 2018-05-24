@@ -2,10 +2,13 @@ package com.botsystem.extensions;
 
 /**
  * Pair classed used as a simple pair class
+ * 
  * @author BlockBa5her
  *
- * @param <K> Generic Key Type
- * @param <V> Generic Value Type
+ * @param <K>
+ *            Generic Key Type
+ * @param <V>
+ *            Generic Value Type
  */
 public class Pair<K, V> {
     private K key;
@@ -16,6 +19,11 @@ public class Pair<K, V> {
         this.value = value;
     }
 
-    public K getKey() {return key;}
-    public V getValue() {return value;}
+    public K getKey() {
+        return key;
+    }
+
+    public V getValue() {
+        return value;
+    }
 }

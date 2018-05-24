@@ -51,8 +51,8 @@ public class BotSystem implements Runnable {
 
     public void logout() {
         if (bot != null) {
-        	runThread.interrupt();
-        	
+            runThread.interrupt();
+
             bot.shutdownNow();
             bot = null;
             Debug.trace("shutdown successful");
@@ -60,9 +60,9 @@ public class BotSystem implements Runnable {
     }
 
     @SuppressWarnings("unchecked")
-	public <T extends Event> void addEvent(Class<T> type, Consumer<T> callback) {
+    public <T extends Event> void addEvent(Class<T> type, Consumer<T> callback) {
         eventHandler.add(type, e -> {
-        	callback.accept((T)e);
+            callback.accept((T) e);
         });
     }
 
@@ -74,7 +74,7 @@ public class BotSystem implements Runnable {
     }
 
     @SuppressWarnings("unchecked")
-	public <T extends BotSystemModule> T getModule(Class<T> type) {
+    public <T extends BotSystemModule> T getModule(Class<T> type) {
         for (BotSystemModule m : getModules()) {
             if (m.getClass().equals(type)) {
                 return (T) m;
@@ -142,9 +142,9 @@ public class BotSystem implements Runnable {
     public Guild[] getGuilds() {
         return bot.getGuilds().toArray(new Guild[0]);
     }
-    
+
     public JDA getAPI() {
-    	return bot;
+        return bot;
     }
 
     private void initialize() {

@@ -55,8 +55,7 @@ import java.util.LinkedList;
 /**
  * Main class for startup, startup in main(String[]) method
  *
- * @author BlockBa5her
- * (C) BlockBa5her
+ * @author BlockBa5her (C) BlockBa5her
  */
 public class Main {
 
@@ -68,8 +67,7 @@ public class Main {
     /**
      * Permissions (setup in setPermissions())
      */
-    private static final LinkedList<Pair<String, String>> permissions =
-            new LinkedList<>();
+    private static final LinkedList<Pair<String, String>> permissions = new LinkedList<>();
 
     /**
      * Parser for given commands
@@ -79,9 +77,21 @@ public class Main {
      * The CommandLine arguments
      */
     public static CommandLine COMMAND_LINE;
-    
+
     private static BotBottle bottle;
     private static Thread botThread;
+
+    /**
+     * Thread that is executed whenever the program is about to be shutdown
+     */
+    private static final Thread shutdownThread = new Thread(() -> {
+        if (bottle != null) {
+            Debug.trace("disposingn bottle for program shutdown");
+            destroyInstance();
+            Debug.trace("done disposing bottle");
+        }
+        Debug.trace("ending program...");
+    });
 
     /**
      * Sets the global thread exception handler
@@ -100,7 +110,9 @@ public class Main {
 
     /**
      * Parses the CLI options using org.apache.cli
-     * @param cliArgs The command arguments to parse
+     * 
+     * @param cliArgs
+     *            The command arguments to parse
      */
     private static void parseCliOptions(String[] cliArgs) {
         try {
@@ -115,8 +127,7 @@ public class Main {
 
             // parsing the options given in startup
             COMMAND_LINE = cliParser.parse(o, cliArgs);
-        }
-        catch (ParseException e) { // if parse exception
+        } catch (ParseException e) { // if parse exception
             ExceptionHelper.throwException(e); // throw for the exception handler to take
         }
     }
@@ -127,12 +138,12 @@ public class Main {
     private static void setPermissions() {
         JSONArray p = CONFIG.getArray("permissions"); // getting permissions from json config
         for (Object obj : p) {
-            JSONObject jObj = (JSONObject)obj; // getting object
+            JSONObject jObj = (JSONObject) obj; // getting object
             permissions.add(new Pair<>((String) jObj.get("name"), (String) jObj.get("id"))); // adding permission
             Debug.trace("adding permissions: " + jObj.get("name") + " " + jObj.get("id")); // tracing information
         }
     }
-    
+
     private static void displayCliHelp() {
         StringBuilder output = new StringBuilder("botsystem.jar command arguments: \n");
 
@@ -150,7 +161,9 @@ public class Main {
 
     /**
      * Main method for the entire bot
-     * @param args The specified CLI arguments
+     * 
+     * @param args
+     *            The specified CLI arguments
      */
     public static void main(String[] args) {
         // call before events
@@ -159,7 +172,7 @@ public class Main {
 
         // if has options "help", show and return
         if (COMMAND_LINE.hasOption("help")) {
-        	displayCliHelp();
+            displayCliHelp();
             return; // returning before bot creation
         }
 
@@ -172,81 +185,64 @@ public class Main {
         RestAction.DEFAULT_FAILURE = Throwable::printStackTrace;
 
         createInstance();
+
+        // adding shutdown thread
+        Runtime.getRuntime().addShutdownHook(shutdownThread);
     }
-    
+
     public boolean isInstanceRunning() {
-    	return botThread != null;
+        return botThread != null;
     }
-    
+
     public static void createInstance() {
-    	
-    	if (botThread != null)
-    		throw new RuntimeException("instance already running");
-    	
-        final ConsoleCommand[] CONSOLE_COMMANDS = {
-                new ConsoleHelpCommand("help"),
-                new ConsoleUptimeCommand("uptime"),
-                new ConsoleSayCommand("say"),
-                new ConsoleStatusCommand("status"),
-                new ConsoleGameCommand("game"),
-                new ConsoleNicknameCommand("nickname"),
-                new ConsoleTestCommand("test"),
-                new ConsoleShutdownCommand("shutdown"),
-                new ConsoleRestartCommand("restart")
-        };
-        
+
+        if (botThread != null)
+            throw new RuntimeException("instance already running");
+
+        final ConsoleCommand[] CONSOLE_COMMANDS = { new ConsoleHelpCommand("help"), new ConsoleUptimeCommand("uptime"),
+                new ConsoleSayCommand("say"), new ConsoleStatusCommand("status"), new ConsoleGameCommand("game"),
+                new ConsoleNicknameCommand("nickname"), new ConsoleTestCommand("test"),
+                new ConsoleShutdownCommand("shutdown"), new ConsoleRestartCommand("restart") };
+
         final BotSystemModule[] MODULES = {
                 // "core" modules
-                new DisplayModule(),
-                new PermissionsModule(permissions),
-                new MonitorModule(),
+                new DisplayModule(), new PermissionsModule(permissions), new MonitorModule(),
 
                 // non-required modules (these interact with core modules though)
-                new PingPongModule(),
-                new BotCommandsModule(new BotCommand[] {
+                new PingPongModule(), new BotCommandsModule(new BotCommand[] {
                         // essential core commands
-                        new HelpCommand("help", "user"),
-                        new CommandsCommand("commands", "user"),
+                        new HelpCommand("help", "user"), new CommandsCommand("commands", "user"),
 
                         // user commands
-                        new UptimeCommand("uptime", "user"),
-                        new InstallHelpCommand("installhelp", "user"),
+                        new UptimeCommand("uptime", "user"), new InstallHelpCommand("installhelp", "user"),
                         new MonitorCommand("monitor", "user"),
 
                         // moderator commands
-                        new RoleInfoCommand("roleinfo", "moderator"),
-                        new KickCommand("kick", "moderator", "moderator"),
-                        new PruneCommand("prune", "moderator"), 
+                        new RoleInfoCommand("roleinfo", "moderator"), new KickCommand("kick", "moderator", "moderator"),
+                        new PruneCommand("prune", "moderator"),
 
                         // staff commands
-                        new BanCommand("ban", "staff", "staff"),
-                        new StatusCommand("status", "staff"),
-                        new GameCommand("game", "staff"),
-                        new NicknameCommand("nickname", "staff"),
-                        new SaveCommand("save", "staff", "saves"),
-                        new RestartCommand("restart", "staff"),
-                        new ShutdownCommand("shutdown", "staff")
-                }),
-                new NoEveryoneModule("moderator"),
-                new ReportModule(),
-                new WelcomeModule(),
-                new SuggestionsModule()
-        };
-    	
-    	botThread = new Thread(() -> {
-    		bottle = new BotBottle(MODULES, CONSOLE_COMMANDS);
-    		bottle.start();
-    	});
-    	botThread.setName("BotSystem Main");
-    	botThread.start();
+                        new BanCommand("ban", "staff", "staff"), new StatusCommand("status", "staff"),
+                        new GameCommand("game", "staff"), new NicknameCommand("nickname", "staff"),
+                        new SaveCommand("save", "staff", "saves"), new RestartCommand("restart", "staff"),
+                        new ShutdownCommand("shutdown", "staff") }),
+                new NoEveryoneModule("moderator"), new ReportModule(), new WelcomeModule(), new SuggestionsModule() };
+
+        botThread = new Thread(() -> {
+            bottle = new BotBottle(MODULES, CONSOLE_COMMANDS);
+            bottle.start();
+        });
+        botThread.setName("BotSystem Main");
+        botThread.start();
     }
+
     public static void destroyInstance() {
-    	if (botThread == null)
-    		throw new RuntimeException("instance not running");
-    	
-		bottle.dispose();
-    	bottle = null;
-    	botThread.interrupt();
-    	botThread = null;
+        if (botThread == null)
+            throw new RuntimeException("instance not running");
+
+        bottle.dispose();
+        bottle = null;
+        botThread.interrupt();
+        botThread = null;
     }
 }

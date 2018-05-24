@@ -8,6 +8,7 @@ import net.dv8tion.jda.core.entities.Message;
 
 /**
  * Command for bot to change the bot's nickname
+ * 
  * @author BlockBa5her
  *
  */
@@ -18,8 +19,11 @@ public class NicknameCommand extends BotCommand {
 
     /**
      * Creates an Instance of the "nickname" command
-     * @param cmd The command to invoke with
-     * @param reqPerm The required permission to invoke
+     * 
+     * @param cmd
+     *            The command to invoke with
+     * @param reqPerm
+     *            The required permission to invoke
      */
     public NicknameCommand(String cmd, String reqPerm) {
         this.cmd = cmd;
@@ -28,13 +32,13 @@ public class NicknameCommand extends BotCommand {
 
     @Override
     public void onInvoke(Message m, String[] args) {
-    	// setup stuff
+        // setup stuff
         BotSystemEmbed emb = new BotSystemEmbed();
         DisplayModule confModule = this.parent.getBot().getModule(DisplayModule.class);
 
         // if no arguments
         if (args.length == 0) {
-        	// stop override and queue update now
+            // stop override and queue update now
             confModule.setNickname(null);
             confModule.queueUpdateNow();
 
@@ -42,7 +46,7 @@ public class NicknameCommand extends BotCommand {
             emb.setTitle("Bot's Global Nickname Reset");
             emb.setDescription("The bot's global nickname has been reset to the config");
         } else {
-        	// get nickname by joining arguments
+            // get nickname by joining arguments
             String nickname = String.join(" ", args);
             // set the nickname and queue update now
             confModule.setNickname(nickname);
@@ -52,7 +56,6 @@ public class NicknameCommand extends BotCommand {
             emb.setTitle("Bot's Global Nickname Updated");
             emb.setDescription("The bot's global nickname has been set to:\n`" + nickname + "`");
         }
-
 
         // send embed into chnanel
         m.getChannel().sendMessage(emb.build()).queue();

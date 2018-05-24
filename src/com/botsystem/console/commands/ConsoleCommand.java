@@ -6,7 +6,9 @@ public abstract class ConsoleCommand {
 
     /**
      * Set's the parent of the commands, to access API
-     * @param m The API for the command to access
+     * 
+     * @param m
+     *            The API for the command to access
      */
     final void setParent(ConsoleCommands m) {
         parent = m;
@@ -14,18 +16,21 @@ public abstract class ConsoleCommand {
 
     /**
      * Invokes the command (with the arguments)
+     * 
      * @param arguments
      */
     public abstract void onInvoke(String[] arguments);
 
     /**
      * Returns the Command to invoke with in the console
+     * 
      * @return
      */
     public abstract String getCmd();
 
     /**
      * Returns the description of the command in the console
+     * 
      * @return
      */
     public abstract String getDesc();

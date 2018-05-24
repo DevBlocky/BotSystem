@@ -41,7 +41,8 @@ public class StatusCommand extends BotCommand {
 
         if (args.length == 0) {
             emb.setTitle("No Input");
-            emb.setDescription("You didn't give any input when using this command!\nStatuses for input: `" + possibleToString() + "`");
+            emb.setDescription("You didn't give any input when using this command!\nStatuses for input: `"
+                    + possibleToString() + "`");
 
             m.getChannel().sendMessage(emb.build()).queue();
             return;
@@ -60,7 +61,8 @@ public class StatusCommand extends BotCommand {
             emb.setDescription(info.getEmbedReply() + "\n\nGive it a minute for the status to update");
         } else {
             emb.setTitle("Invalid Status");
-            emb.setDescription("You gave an invalid status as an argument.\nStatuses for input: `" + possibleToString() + "`");
+            emb.setDescription(
+                    "You gave an invalid status as an argument.\nStatuses for input: `" + possibleToString() + "`");
         }
 
         m.getChannel().sendMessage(emb.build()).queue();

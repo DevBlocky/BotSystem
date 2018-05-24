@@ -8,8 +8,7 @@ import java.time.Instant;
 /**
  * A command used for showing the uptime for the bot
  *
- * @author BlockBa5her
- * (C) BlockBa5her
+ * @author BlockBa5her (C) BlockBa5her
  */
 public class ConsoleUptimeCommand extends ConsoleCommand {
 
@@ -25,13 +24,8 @@ public class ConsoleUptimeCommand extends ConsoleCommand {
     public void onInvoke(String[] arguments) {
         long[] uptime = Utils.calcUptime(startUptime);
 
-        String out =
-                uptime[0] + " milliseconds, " +
-                uptime[1] + " seconds, " +
-                uptime[2] + " minutes, " +
-                uptime[3] + " hours, " +
-                uptime[4] + " days, and " +
-                uptime[5] + " weeks";
+        String out = uptime[0] + " milliseconds, " + uptime[1] + " seconds, " + uptime[2] + " minutes, " + uptime[3]
+                + " hours, " + uptime[4] + " days, and " + uptime[5] + " weeks";
 
         System.out.println(out);
     }

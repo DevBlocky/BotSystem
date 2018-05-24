@@ -42,7 +42,7 @@ public class BotSystemEventHandler implements EventListener {
                         String eStr = ExceptionHelper.getFullExceptionString(e);
                         System.err.println("JDA threw a IllegalStateException:\n");
                         System.err.println(eStr);
-                    }catch (Exception e) {
+                    } catch (Exception e) {
                         Debug.trace("exception on event, running throw thread");
                         ExceptionHelper.createExceptionThrowThread(e);
                     }

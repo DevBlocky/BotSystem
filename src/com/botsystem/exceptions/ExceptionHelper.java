@@ -20,6 +20,7 @@ public class ExceptionHelper {
     public static void throwException(Throwable e) {
         throw new RuntimeException(e);
     }
+
     public static Thread createExceptionThrowThread(Throwable e) {
         Thread t = new Thread(() -> throwException(e));
         t.setName(e.getClass().getSimpleName() + "ThrowThread");

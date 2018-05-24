@@ -11,8 +11,7 @@ import java.util.List;
 /**
  * A command for putting a specified message into a specified chat
  *
- * @author BlockBa5her
- * (C) BlockBa5her
+ * @author BlockBa5her (C) BlockBa5her
  */
 public class ConsoleSayCommand extends ConsoleCommand {
 

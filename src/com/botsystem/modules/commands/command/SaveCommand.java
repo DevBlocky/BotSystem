@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * A command to save a file to the server
+ * 
  * @author BlockBa5her
  *
  */
@@ -20,9 +21,13 @@ public class SaveCommand extends BotCommand {
 
     /**
      * Creates an Instance of the "save" command
-     * @param cmd The command to invoke with
-     * @param reqPerm The required permission to invoke
-     * @param saveFolder The folder to save the files in
+     * 
+     * @param cmd
+     *            The command to invoke with
+     * @param reqPerm
+     *            The required permission to invoke
+     * @param saveFolder
+     *            The folder to save the files in
      */
     public SaveCommand(String cmd, String reqPerm, String saveFolder) {
         this.cmd = cmd;
@@ -32,13 +37,13 @@ public class SaveCommand extends BotCommand {
 
     @Override
     public void onInvoke(Message m, String[] args) {
-    	// setup method
+        // setup method
         BotSystemEmbed emb = new BotSystemEmbed();
 
         // get attachments
         List<Message.Attachment> attrList = m.getAttachments();
         if (attrList.size() == 0) { // if no attachments
-        	// say so and return
+            // say so and return
             emb.setTitle("Not Enough Attachments");
             emb.setDescription("There was not enough attachments ");
             m.getChannel().sendMessage(emb.build()).queue();
@@ -71,11 +76,11 @@ public class SaveCommand extends BotCommand {
 
         // if succeeded
         if (success) {
-        	// setup embed
+            // setup embed
             emb.setTitle("Saved File Successfully");
             emb.setDescription("The file `" + fileName + "` has been saved on the VPS");
         } else { // otherwise
-        	// setup embed but for error
+            // setup embed but for error
             emb.setTitle("Internal Error");
             emb.setDescription("An internal error, with JDA, caused the file to not be able to be saved :cry:");
         }

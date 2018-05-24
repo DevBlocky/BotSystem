@@ -5,8 +5,7 @@ import com.botsystem.console.commands.ConsoleCommand;
 /**
  * A command used for testing
  *
- * @author BlockBa5her
- * (C) BlockBa5her
+ * @author BlockBa5her (C) BlockBa5her
  */
 public class ConsoleTestCommand extends ConsoleCommand {
 
