@@ -9,8 +9,6 @@ import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.events.Event;
-import net.dv8tion.jda.core.events.ReadyEvent;
-
 import javax.security.auth.login.LoginException;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,21 +29,25 @@ public class BotSystem implements Runnable {
         modules = new HashMap<>();
         builder = new JDABuilder(AccountType.BOT).setToken(token);
         eventHandler = new BotSystemEventHandler();
-
-        eventHandler.add(ReadyEvent.class, event -> initialize());
     }
 
     public void login() {
         if (bot == null) {
+            runThread = new Thread(this);
+            runThread.setName("BotSystem");
+            builder.addEventListener(eventHandler);
+            
             try {
-                bot = builder.buildAsync();
+                bot = builder.buildBlocking();
+                runThread.start();
+                Debug.trace("logged in successfully");
             } catch (LoginException e) {
                 ExceptionHelper.throwException(e);
+            } catch (InterruptedException e) {
+                ExceptionHelper.throwException(e);
             }
-
-            bot.addEventListener(eventHandler);
-            runThread = new Thread(this);
-            runThread.start();
+            
+            initialize();
         }
     }
 
@@ -59,11 +61,12 @@ public class BotSystem implements Runnable {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public <T extends Event> void addEvent(Class<T> type, Consumer<T> callback) {
-        eventHandler.add(type, e -> {
-            callback.accept((T) e);
-        });
+        eventHandler.add(type, callback);
+    }
+
+    public <T extends Event> void removeEvent(Consumer<T> callback) {
+        eventHandler.remove(callback);
     }
 
     private boolean alreadyHasModuleType(Class<?> type) {
@@ -153,8 +156,6 @@ public class BotSystem implements Runnable {
         Debug.trace("setting bot features");
         bot.setAutoReconnect(true);
         startAllModules();
-
-        runThread.setName("BotSystem");
 
         Debug.trace("done with initialization");
     }

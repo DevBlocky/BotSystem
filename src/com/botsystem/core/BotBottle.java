@@ -1,9 +1,9 @@
-package com.botsystem;
+package com.botsystem.core;
 
+import com.botsystem.Debug;
+import com.botsystem.Main;
 import com.botsystem.console.commands.ConsoleCommand;
 import com.botsystem.console.commands.ConsoleCommands;
-import com.botsystem.core.BotSystem;
-import com.botsystem.core.BotSystemModule;
 
 import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.events.ShutdownEvent;
@@ -33,7 +33,7 @@ public class BotBottle {
      * @param consoleCommands
      *            The console commands to add
      */
-    BotBottle(BotSystemModule[] modules, ConsoleCommand[] consoleCommands) {
+    public BotBottle(BotSystemModule[] modules, ConsoleCommand[] consoleCommands) {
         Debug.trace("creating instance of new bot bottle");
 
         this.modules = modules;
@@ -55,8 +55,6 @@ public class BotBottle {
         bot = new BotSystem(Main.CONFIG.getString("token"));
         // adding modules
         bot.addModuleRange(modules);
-        // login the bot
-        bot.login();
 
         // add ready event to bot
         bot.addEvent(ReadyEvent.class, e -> {
@@ -67,6 +65,9 @@ public class BotBottle {
             commands.start();
             Debug.trace("console commands started");
         });
+        
+        // login the bot
+        bot.login();
     }
 
     boolean botShutdown = false;
@@ -89,7 +90,9 @@ public class BotBottle {
         }
 
         // stop console commands
-        commands.interrupt();
+        if (commands != null) {
+            commands.interrupt();
+        }
 
         // nullify everything
         bot = null;

@@ -4,8 +4,11 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="D:/eclipse/java/botsystem/jar/commons-cli-1.4.jar"/>
 	<classpathentry kind="lib" path="D:/eclipse/java/botsystem/jar/commons-collections4-4.1.jar"/>
-	<classpathentry kind="lib" path="D:/eclipse/java/botsystem/jar/JDA-3.6.0_354.jar"/>
-	<classpathentry kind="lib" path="D:/eclipse/java/botsystem/jar/JDA-3.6.0_354-javadoc.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse/java/botsystem/jar/JDA-3.6.0_354.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/botsystem/jar/JDA-3.6.0_354-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="D:/eclipse/java/botsystem/jar/jna-4.5.1.jar"/>
 	<classpathentry kind="lib" path="D:/eclipse/java/botsystem/jar/json-20180130.jar"/>
 	<classpathentry kind="lib" path="D:/eclipse/java/botsystem/jar/nv-websocket-client-2.4.jar"/>

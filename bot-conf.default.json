@@ -9,9 +9,10 @@
 
   "welcome-channel": "CHANNEL ID",
   "suggest-channel": "CHANNEL ID",
+  "log-channel": "CHANNEL ID",
 
   "game": "BOT GAME HERE",
   "status": "online",
   "nickname": "NICKNAME OF BOT HERE",
-  "version": "0.5.1"
+  "version": "0.5.3"
 }

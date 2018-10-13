@@ -27,7 +27,6 @@ public class BotConfig {
             ByteBuffer bf = ByteBuffer.allocate((int) fr.length()); // new byte buffer with fr length
             fis.read(bf.array()); // reading file into buffer
             fis.close(); // close the stream
-            new String();
             String str = new String(bf.array(), "UTF-8"); // get raw string out of data
 
             // parsing JSON

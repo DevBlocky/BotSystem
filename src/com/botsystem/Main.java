@@ -1,35 +1,15 @@
 package com.botsystem;
 
 import com.botsystem.console.commands.ConsoleCommand;
-import com.botsystem.console.commands.command.ConsoleGameCommand;
-import com.botsystem.console.commands.command.ConsoleHelpCommand;
-import com.botsystem.console.commands.command.ConsoleNicknameCommand;
-import com.botsystem.console.commands.command.ConsoleRestartCommand;
-import com.botsystem.console.commands.command.ConsoleSayCommand;
-import com.botsystem.console.commands.command.ConsoleShutdownCommand;
-import com.botsystem.console.commands.command.ConsoleStatusCommand;
-import com.botsystem.console.commands.command.ConsoleTestCommand;
-import com.botsystem.console.commands.command.ConsoleUptimeCommand;
+import com.botsystem.console.commands.command.*;
+import com.botsystem.core.BotBottle;
 import com.botsystem.core.BotSystemModule;
 import com.botsystem.exceptions.ExceptionHelper;
 import com.botsystem.extensions.Pair;
+import com.botsystem.modules.adminlog.AdminLogModule;
 import com.botsystem.modules.commands.BotCommand;
 import com.botsystem.modules.commands.BotCommandsModule;
-import com.botsystem.modules.commands.command.BanCommand;
-import com.botsystem.modules.commands.command.CommandsCommand;
-import com.botsystem.modules.commands.command.GameCommand;
-import com.botsystem.modules.commands.command.HelpCommand;
-import com.botsystem.modules.commands.command.InstallHelpCommand;
-import com.botsystem.modules.commands.command.KickCommand;
-import com.botsystem.modules.commands.command.MonitorCommand;
-import com.botsystem.modules.commands.command.NicknameCommand;
-import com.botsystem.modules.commands.command.PruneCommand;
-import com.botsystem.modules.commands.command.RestartCommand;
-import com.botsystem.modules.commands.command.RoleInfoCommand;
-import com.botsystem.modules.commands.command.SaveCommand;
-import com.botsystem.modules.commands.command.ShutdownCommand;
-import com.botsystem.modules.commands.command.StatusCommand;
-import com.botsystem.modules.commands.command.UptimeCommand;
+import com.botsystem.modules.commands.command.*;
 import com.botsystem.modules.display.DisplayModule;
 import com.botsystem.modules.monitor.MonitorModule;
 import com.botsystem.modules.noeveryone.NoEveryoneModule;
@@ -39,6 +19,10 @@ import com.botsystem.modules.report.ReportModule;
 import com.botsystem.modules.suggestions.SuggestionsModule;
 import com.botsystem.modules.welcome.WelcomeModule;
 
+import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
+import net.dv8tion.jda.core.events.message.MessageDeleteEvent;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.requests.RestAction;
 
 import org.apache.commons.cli.CommandLine;
@@ -86,7 +70,7 @@ public class Main {
      */
     private static final Thread shutdownThread = new Thread(() -> {
         if (bottle != null) {
-            Debug.trace("disposingn bottle for program shutdown");
+            Debug.trace("disposing bottle for program shutdown");
             destroyInstance();
             Debug.trace("done disposing bottle");
         }
@@ -183,7 +167,6 @@ public class Main {
         // DEBUG SHIT
         RestAction.setPassContext(true);
         RestAction.DEFAULT_FAILURE = Throwable::printStackTrace;
-
         createInstance();
 
         // adding shutdown thread
@@ -192,6 +175,70 @@ public class Main {
 
     public boolean isInstanceRunning() {
         return botThread != null;
+    }
+    
+    private static AdminLogModule setupAdminLog(AdminLogModule log) {
+        log.addLoggedEvent(GuildMemberJoinEvent.class, (_e) -> {
+            GuildMemberJoinEvent e = (GuildMemberJoinEvent)_e;
+            
+            JSONObject baseObj = new JSONObject();
+            baseObj.append("nick", e.getUser().getName());
+            baseObj.append("discrim", e.getUser().getDiscriminator());
+            baseObj.append("id", e.getUser().getId());
+            
+            return baseObj;
+        });
+        log.addLoggedEvent(GuildMemberLeaveEvent.class, (_e) -> {
+            GuildMemberLeaveEvent e = (GuildMemberLeaveEvent)_e;
+            
+            JSONObject baseObj = new JSONObject();
+            baseObj.append("nick", e.getUser().getName());
+            baseObj.append("discrim", e.getUser().getDiscriminator());
+            baseObj.append("id", e.getUser().getId());
+            
+            return baseObj;
+        });
+        log.addLoggedEvent(MessageReceivedEvent.class, (_e) -> {
+            MessageReceivedEvent e = (MessageReceivedEvent)_e;
+            
+            if (e.getAuthor().isBot())
+                return null;
+            
+            JSONObject baseObj = new JSONObject();
+            
+            JSONObject userObj = new JSONObject();
+            userObj.append("id", e.getAuthor().getId());
+            userObj.append("nick", e.getAuthor().getName());
+            userObj.append("discrim", e.getAuthor().getDiscriminator());
+            baseObj.append("user-info", userObj);
+            
+            JSONObject messageObj = new JSONObject();
+            messageObj.append("id", e.getMessage().getId());
+            messageObj.append("text", e.getMessage().getContentRaw().replaceAll("```", "'''"));
+            messageObj.append("channel-id", e.getMessage().getChannel().getId());
+            messageObj.append("channel-name", e.getMessage().getChannel().getName());
+            baseObj.append("message-info", messageObj);
+            
+            return baseObj;
+        });
+        log.addLoggedEvent(MessageDeleteEvent.class, (_e) -> {
+            MessageDeleteEvent e = (MessageDeleteEvent)_e;
+            
+            JSONObject baseObj = new JSONObject();
+            
+            JSONObject channelObj = new JSONObject();
+            channelObj.append("id", e.getChannel().getId());
+            channelObj.append("name", e.getChannel().getName());
+            baseObj.append("channel-info", channelObj);
+            
+            JSONObject messageObj = new JSONObject();
+            messageObj.append("id", e.getMessageId());
+            baseObj.append("message-info", messageObj);
+            
+            return baseObj;
+        });
+        
+        return log;
     }
 
     public static void createInstance() {
@@ -226,7 +273,7 @@ public class Main {
                         new GameCommand("game", "staff"), new NicknameCommand("nickname", "staff"),
                         new SaveCommand("save", "staff", "saves"), new RestartCommand("restart", "staff"),
                         new ShutdownCommand("shutdown", "staff") }),
-                new NoEveryoneModule("moderator"), new ReportModule(), new WelcomeModule(), new SuggestionsModule() };
+                new NoEveryoneModule("moderator"), new ReportModule(), new WelcomeModule(), new SuggestionsModule(), setupAdminLog(new AdminLogModule()) };
 
         botThread = new Thread(() -> {
             bottle = new BotBottle(MODULES, CONSOLE_COMMANDS);

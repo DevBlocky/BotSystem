@@ -119,9 +119,14 @@ public class ConsoleCommands extends Thread implements Iterable<ConsoleCommand> 
     public Iterator<ConsoleCommand> iterator() {
         return commands.iterator();
     }
+    
+    @Override
+    public void start() {
+        setName(this.getClass().getSimpleName());
+        super.start();
+    }
 
     private boolean keepAlive = true;
-
     /**
      * Stops the Commands from executing
      */

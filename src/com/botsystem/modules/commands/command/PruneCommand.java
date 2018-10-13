@@ -1,16 +1,12 @@
 package com.botsystem.modules.commands.command;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import com.botsystem.extensions.BotSystemEmbed;
-import com.botsystem.extensions.Utils;
 import com.botsystem.modules.commands.BotCommand;
 
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.exceptions.ErrorResponseException;
-import net.dv8tion.jda.core.requests.RestAction;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 /**
  * A command to prune messages from the chat
@@ -23,7 +19,7 @@ public class PruneCommand extends BotCommand {
     /**
      * The max number of messages deleted at once
      */
-    private final int MSG_DELETE_LIMIT = 75;
+    private final int MSG_DELETE_LIMIT = 100;
 
     private String cmd;
     private String reqPerm;
@@ -82,42 +78,16 @@ public class PruneCommand extends BotCommand {
         }
 
         // get the channel before delete
-        MessageChannel c = m.getChannel();
+        TextChannel c = m.getTextChannel();
         m.delete().complete(); // deleting initial message
 
         // get channel history up to limit
         List<Message> history = c.getIterableHistory().limit(count).complete();
-        // rest action queue for messages being deleted
-        List<RestAction<?>> queue = new LinkedList<>();
-        // for every msg
-        for (Message historyM : history) {
-            RestAction<Void> x = historyM.delete(); // create RestAction for msg
-            queue.add(x); // add to the queue var
-            x.queue(); // queue for happening in discord
-        }
-
-        // create a new thread (so that it doesn't block)
-        new Thread(() -> {
-            // for every rest action in queue
-            for (RestAction<?> x : queue) {
-                // try to delete msg without error
-                try {
-                    x.complete(); // waiting for everything to complete
-                } catch (ErrorResponseException e) { // basically if message already deleted
-                    // cancel
-                }
-            }
-
-            // after everything deleted send msg
-            emb.setTitle("Messages Deleted");
-            emb.setDescription("`" + count + "` messages have been deleted from this channel");
-            Message newM = c.sendMessage(emb.build()).complete();
-
-            // after 3 seconds, delete msg previously sent
-            Utils.createTimeout(() -> {
-                newM.delete().queue();
-            }, 3000);
-        }).start();
+        if (history.size() == 1)
+            history.get(0).delete().queue();
+        else
+            c.deleteMessages(history).queue();
+            
     }
 
     @Override
