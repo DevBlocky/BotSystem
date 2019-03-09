@@ -2,20 +2,20 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="D:/eclipse/java/botsystem/jar/commons-cli-1.4.jar"/>
-	<classpathentry kind="lib" path="D:/eclipse/java/botsystem/jar/commons-collections4-4.1.jar"/>
-	<classpathentry kind="lib" path="D:/eclipse/java/botsystem/jar/JDA-3.6.0_354.jar">
+	<classpathentry kind="lib" path="D:/eclipse/java/blockybot/jar/commons-cli-1.4.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse/java/blockybot/jar/commons-collections4-4.1.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse/java/blockybot/jar/JDA-3.6.0_354.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/botsystem/jar/JDA-3.6.0_354-javadoc.jar!/"/>
+			<attribute name="javadoc_location" value="jar:platform:/resource/blockybot/jar/JDA-3.6.0_354-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/eclipse/java/botsystem/jar/jna-4.5.1.jar"/>
-	<classpathentry kind="lib" path="D:/eclipse/java/botsystem/jar/json-20180130.jar"/>
-	<classpathentry kind="lib" path="D:/eclipse/java/botsystem/jar/nv-websocket-client-2.4.jar"/>
-	<classpathentry kind="lib" path="D:/eclipse/java/botsystem/jar/trove4j-3.0.3.jar"/>
-	<classpathentry kind="lib" path="D:/eclipse/java/botsystem/jar/okhttp-3.10.0.jar"/>
-	<classpathentry kind="lib" path="D:/eclipse/java/botsystem/jar/slf4j-api-1.7.25.jar"/>
-	<classpathentry kind="lib" path="D:/eclipse/java/botsystem/jar/slf4j-simple-1.7.25.jar"/>
-	<classpathentry kind="lib" path="D:/eclipse/java/botsystem/jar/okio-1.14.1.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse/java/blockybot/jar/jna-4.5.1.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse/java/blockybot/jar/json-20180130.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse/java/blockybot/jar/nv-websocket-client-2.4.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse/java/blockybot/jar/trove4j-3.0.3.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse/java/blockybot/jar/okhttp-3.10.0.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse/java/blockybot/jar/slf4j-api-1.7.25.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse/java/blockybot/jar/slf4j-simple-1.7.25.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse/java/blockybot/jar/okio-1.14.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

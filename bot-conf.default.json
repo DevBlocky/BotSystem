@@ -1,18 +1,49 @@
 {
-  "token": "BOT TOKEN",
+	"token" : "TOKEN",
 
-  "permissions": [
-    {"name": "staff", "id": "ROLE ID"},
-    {"name": "moderator", "id": "ROLE ID"},
-    {"name": "user", "id": "ROLE ID"}
-  ],
+    "modules": {
+        "AdminLogModule": {
+            "channel": "LOG CHANNEL ID"
+        },
+		"BotCommandsModule": {
+			"header": "^",
+			"command-perms": {
+				"ban": "admin",
+				"banid": "admin",
+				"commands": "user",
+				"dsinstall": "user",
+				"game": "blocky",
+				"help": "user",
+				"kick": "moderator",
+				"monitor": "user",
+				"nickname": "admin",
+				"prune": "moderator",
+				"roleinfo": "moderator",
+				"save": "blocky",
+				"shutdown": "blocky",
+				"status": "blocky",
+				"uptime": "user",
+				"default": "blocky"
+			}
+		},
+        "PermissionsModule": {
+            "roles": [
+				{"name": "blocky", "id": "ROLE ID"},
+        		{"name": "admin", "id": "ROLE ID"},
+        		{"name": "moderator", "id": "ROLE ID"},
+        		{"name": "user", "id": "ROLE ID"}
+        	]
+        },
+		"NoEveryoneModule": {
+			"permission": "moderator"
+		},
+        "WelcomeModule": {
+            "channel": "WELCOME CHANNEL ID"
+        }
+    },
 
-  "welcome-channel": "CHANNEL ID",
-  "suggest-channel": "CHANNEL ID",
-  "log-channel": "CHANNEL ID",
-
-  "game": "BOT GAME HERE",
-  "status": "online",
-  "nickname": "NICKNAME OF BOT HERE",
-  "version": "0.5.3"
+	"game": "Use ^help for help",
+	"status": "online",
+	"nickname": "BlockyBot",
+	"version": "0.6.0"
 }

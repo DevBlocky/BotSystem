@@ -54,7 +54,7 @@ local.properties
 
 # BotSystem files and folders
 saves/
-botsystem_lib/
-botsystem.jar
+blockybot.jar
 bot-conf.json
 /target/
+filter.txt
